@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(cm status:*), Bash(cm checkin:*), Bash(cm find:*), Bash(cm log:*), Read, Edit, Write
+allowed-tools: Bash(cm wi:*), Bash(cm status:*), Bash(cm checkin:*), Bash(cm find:*), Bash(cm log:*), Read, Edit, Write
 description: PlasticSCM checkin with smart comment generation — filters auto-generated files, supports user comments, archives filter patterns (체크인/커밋/푸시)
 argument-hint: "[additional comment]"
 ---
