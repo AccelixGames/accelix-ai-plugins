@@ -9,7 +9,7 @@
 ## [1.4.0] - 2026-03-05
 
 ### 변경
-- claude-plastic-scm v1.3.0: `/cm-merge-comment` 서버 사이드 병합 통합 — 워크스페이스 전환 없이 병합 + 코멘트 정리
+- claude-plastic-scm v1.3.0: `/cm-merge-comment` 서버 사이드 병합 통합 + `/cm-checkin` 코멘트 불렛 포인트 형식·접두사 규칙
 
 ## [1.3.1] - 2026-03-05
 

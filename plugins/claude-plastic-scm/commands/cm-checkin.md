@@ -44,10 +44,31 @@ Classify each file from `cm status --short` into three groups:
 
 ### Step 3: Generate comment
 
-- Analyze only the **primary changes** to write a concise, descriptive checkin comment.
-- If recent changesets have comments, match their style and language.
-- If there are no recent comments to reference, write in Korean.
+Analyze only the **primary changes** and write a checkin comment following these rules:
+
+**Format — bullet point list:**
+```
+- 작업 내용 1
+- 작업 내용 2
+```
+
+Each bullet describes one logical change. Group related file changes into a single bullet.
+
+**Prefix rules** — each bullet MUST start with a category prefix:
+
+| Prefix | Usage | Example |
+|--------|-------|---------|
+| (없음) | 신규 기능·콘텐츠 추가 | `- 플레이 테이블 시스템 구현` |
+| `수정:` | 버그 수정 | `- 수정: 연속퇴장 버그` |
+| `변경:` | 기존 동작·구조 변경 | `- 변경: CustomerSpawner → SO 기반 파이프라인` |
+| `제거:` | 코드·에셋 삭제 | `- 제거: 미사용 CustomerPool 클래스` |
+| `리팩토링:` | 동작 변경 없는 구조 개선 | `- 리팩토링: Actor.Customer 네임스페이스 통일` |
+
+- Prefix가 없으면 **신규 추가**로 간주 (가장 흔한 케이스).
+- 한 불렛에 prefix와 설명을 함께 쓴다. 별도 줄 분리 없음.
+- 최종 언어는 **한국어** 기본. 코드 식별자(클래스명, 메서드명)는 원문 유지.
 - If `$ARGUMENTS` contains text, treat it as additional user context and incorporate it into the comment.
+- If recent changesets have comments, reference their tone but always follow the bullet format above.
 
 ### Step 4: Collect user comment (optional)
 
