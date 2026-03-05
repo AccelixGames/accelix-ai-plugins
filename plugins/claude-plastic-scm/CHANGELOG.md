@@ -3,6 +3,21 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [1.2.0] - 2026-03-05
+
+### 변경
+- `/cm-checkin` 코멘트 생성 강화: 자동 생성 파일(.meta 등) 필터링, 사용자 추가 코멘트 입력, 3계층 필터 판정
+- 프로젝트별 필터 아카이브 지원 (`.claude/checkin-filters.local.md`)
+
+### 추가
+- Git ↔ PlasticSCM 용어 매핑 테이블 (SKILL.md)
+- Git 용어 트리거 확장: "커밋", "푸쉬", "commit", "push" 등으로 스킬 자동 활성화
+- `references/cm-commands.md`에 Checkin Filter Patterns 섹션
+
+### 수정
+- `cs:2700` → `cs:150` (보안: 실제 체인지셋 번호 제거)
+- plugin.json `repository` URL 수정
+
 ## [1.1.0] - 2026-03-05
 
 ### 변경

@@ -9,8 +9,9 @@ description: >
   concepts, or troubleshooting VCS issues — even if they don't explicitly
   mention "PlasticSCM" but are clearly working in a cm-managed workspace.
   Korean triggers: "플라스틱", "체인지셋", "cm 명령", "병합", "브랜치",
-  "체크인", "워크스페이스", "변경 이력", "라벨"
-tools: Bash, Read
+  "체크인", "워크스페이스", "변경 이력", "라벨", "커밋", "푸쉬", "푸시",
+  "변경사항 올려", "코드 올려", "변경사항 정리", "코멘트 생성", "체크인 코멘트"
+  English triggers: "commit", "push", "checkin comment", "pending changes"
 ---
 
 # PlasticSCM (Unity Version Control) Knowledge Base
@@ -35,6 +36,25 @@ For detailed command documentation, see `references/cm-commands.md`.
 | Edit CS comment | `cm changeset editcomment cs:{id} "{comment}"` |
 | Merge branch | `cm merge br:{source} --merge` |
 | Undo changes | `cm undo "{path}"` |
+
+## Git ↔ PlasticSCM Terminology
+
+When users use Git terminology, map it to PlasticSCM equivalents:
+
+| Git | PlasticSCM | Notes |
+|-----|-----------|-------|
+| commit | checkin (`cm checkin`) | Immediately syncs to server (no separate push needed) |
+| push | (included in checkin) | checkin = commit + push |
+| pull | update (`cm update`) | Server → local |
+| branch | branch (`cm branch`) | Same concept |
+| merge | merge (`cm merge`) | Same concept |
+| stash | shelve (`cm shelve`) | Temporary storage |
+| log | find changeset / history | History queries |
+| diff | diff (`cm diff`) | Same concept |
+| status | status (`cm status`) | Same concept |
+| clone | workspace create | Create workspace |
+
+**Key difference:** PlasticSCM has no staging area. `cm checkin` sends changes directly to the server — there is no separate commit/push workflow.
 
 ## Object Specifications
 

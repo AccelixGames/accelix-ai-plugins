@@ -1,12 +1,12 @@
 {
   "name": "claude-plastic-scm",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "PlasticSCM (Unity Version Control) workflow automation for Claude Code",
   "author": {
     "name": "AccelixGames",
     "email": "accelix.staff@gmail.com"
   },
-  "repository": "https://github.com/AccelixGames/claude-plugins-accelix",
+  "repository": "https://github.com/AccelixGames/accelix-ai-plugins",
   "license": "MIT",
   "keywords": ["plasticscm", "unity", "version-control", "vcs", "cm"]
 }

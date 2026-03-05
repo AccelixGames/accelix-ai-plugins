@@ -20,6 +20,48 @@ Detailed reference for PlasticSCM CLI commands used by the claude-plastic-scm pl
 
 ---
 
+## Checkin Comment Filter Patterns (Unity Project)
+
+Used by `/cm-checkin` to classify pending changes for smart comment generation.
+
+### Primary Changes (include in comment analysis)
+
+File extensions that are typically edited directly by developers:
+
+`.cs`, `.asset`, `.prefab`, `.unity`, `.json`, `.md`, `.txt`, `.shader`, `.cginc`, `.hlsl`,
+`.asmdef`, `.yaml`, `.yml`, `.xml`, `.png`, `.jpg`, `.wav`, `.mp3`, `.mat`, `.controller`,
+`.overrideController`, `.playable`, `.signal`, `.renderTexture`, `.lighting`, `.spriteatlas`
+
+### Auto-generated / Ancillary (exclude from comment, include in checkin)
+
+Files that are auto-generated or change as a side effect of primary changes:
+
+| Pattern | Reason |
+|---------|--------|
+| `*.meta` | Unity auto-generates for every asset |
+| `Library/*` | Unity import cache |
+| `Logs/*` | Unity editor logs |
+| `Temp/*` | Unity temporary files |
+| `obj/*` | Build output |
+| `UserSettings/*` | Per-user editor settings |
+| `*.csproj` | Auto-generated project files |
+| `*.sln` | Auto-generated solution file |
+| `Packages/packages-lock.json` | Auto-generated package lock |
+
+### Project-specific Archive
+
+Projects can define additional ancillary patterns in `.claude/checkin-filters.local.md`.
+The `/cm-checkin` command reads this file and merges patterns with the built-in list.
+
+When a user classifies an unrecognized file as auto-generated, the command offers to archive the pattern for future use.
+
+### Notes
+
+- This list should be updated as new auto-generated patterns are discovered
+- When in doubt, ask the user whether a file should be included in comment analysis
+
+---
+
 ## checkin
 
 Save pending changes to the repository.
@@ -320,7 +362,7 @@ cm switch {spec}
 **Examples:**
 ```bash
 cm switch br:/main/feature
-cm switch cs:2700
+cm switch cs:150
 cm switch lb:v1.0
 ```
 
