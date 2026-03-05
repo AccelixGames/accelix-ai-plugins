@@ -3,6 +3,14 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [1.3.0] - 2026-03-05
+
+### 변경
+- `/cm-merge-comment` 전면 재구성: 서버 사이드 병합(`--to`) + 코멘트 정리 통합 워크플로우
+  - 현재 브랜치에 머물면서 대상 브랜치로 병합 실행
+  - 병합 후 자동 코멘트 수집·정리·적용
+- `references/cm-commands.md`: merge `--to` 서버 사이드 병합 예시 추가
+
 ## [1.2.1] - 2026-03-05
 
 ### 수정

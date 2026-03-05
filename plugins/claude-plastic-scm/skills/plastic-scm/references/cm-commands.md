@@ -251,8 +251,19 @@ cm merge {source-spec} [options]
 
 **Examples:**
 ```bash
+# Standard merge (workspace must be on target branch)
 cm merge br:/main/feature --merge
+
+# Server-side merge — merge source INTO target without switching branches
+cm merge br:/main/feature --to=br:/main/develop --merge
+
+# Server-side merge with comment
+cm merge br:/main/feature --to=br:/main/release --merge -c="Merged feature"
+
+# Cherry-pick specific changeset
 cm merge cs:100 --cherrypicking --merge
+
+# Merge keeping source on conflicts
 cm merge br:/main/hotfix --merge --keepsource
 ```
 

@@ -6,6 +6,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [1.4.0] - 2026-03-05
+
+### 변경
+- claude-plastic-scm v1.3.0: `/cm-merge-comment` 서버 사이드 병합 통합 — 워크스페이스 전환 없이 병합 + 코멘트 정리
+
 ## [1.3.1] - 2026-03-05
 
 ### 변경
