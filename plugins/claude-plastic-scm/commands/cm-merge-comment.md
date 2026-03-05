@@ -14,7 +14,7 @@ Collect all comments from sub-branch changesets that were merged between the lat
 
 ### Arguments
 
-- If `$ARGUMENTS` contains a branch path (e.g., `/main/MacBuilder`), use that branch.
+- If `$ARGUMENTS` contains a branch path (e.g., `/main/release`), use that branch.
 - If `$ARGUMENTS` is empty, parse the current branch from the workspace info above. Extract the branch path from the pattern `브랜치 {path}@` or `Branch {path}@`.
 
 ### Steps
@@ -49,13 +49,13 @@ Collect all comments from sub-branch changesets that were merged between the lat
    - Skip empty comments and remove duplicates
    - Example:
      ```
-     [BugFix_Alpha2_SB]
-     - Fixed build error: VolumeProfile reconnection
-     - Phone UI home button added
+     [feature-login]
+     - Added OAuth2 login flow
+     - Fixed token refresh logic
 
-     [Km-RealLastBugFix]
-     - Scene restore bug fix
-     - Furniture placement particle
+     [hotfix-ui]
+     - Resolved layout overflow on mobile
+     - Updated button styles
      ```
 
 6. **Show the formatted comment to the user and ask for confirmation** before applying.

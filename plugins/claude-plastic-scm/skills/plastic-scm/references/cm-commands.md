@@ -136,19 +136,19 @@ where branch = (SELECT cs.branch FROM changeset WHERE changesetid = 100)
 **Examples:**
 ```bash
 # Changesets on a branch
-cm find changeset "where branch='/main/Alpha2'" --format="{changesetid}|{date}|{comment}" --nototal
+cm find changeset "where branch='/main/develop'" --format="{changesetid}|{date}|{comment}" --nototal
 
 # Merges into a branch
-cm find merge "where dstbranch='/main/MacBuilder'" --format="{dstchangeset}|{srcchangeset}|{srcbranch}" --nototal
+cm find merge "where dstbranch='/main/release'" --format="{dstchangeset}|{srcchangeset}|{srcbranch}" --nototal
 
 # Changesets by author in date range
 cm find changeset "where owner='user@email.com' and date > '2026-01-01'" --format="{changesetid}|{comment}" --nototal
 
 # Child branches
-cm find branch "where parent='/main/Alpha2'" --format="{name}" --nototal
+cm find branch "where parent='/main/develop'" --format="{name}" --nototal
 
 # Merges in changeset range
-cm find merge "where dstbranch='/main/Alpha2' and dstchangeset > 2700 and dstchangeset <= 2720" --format="{srcchangeset}|{srcbranch}|{srccomment}" --nototal
+cm find merge "where dstbranch='/main/develop' and dstchangeset > 100 and dstchangeset <= 120" --format="{srcchangeset}|{srcbranch}|{srccomment}" --nototal
 ```
 
 ---
@@ -280,7 +280,7 @@ cm branch {command} [options]
 
 **Examples:**
 ```bash
-cm branch create feature-login br:/main/Alpha2
+cm branch create feature-login br:/main/develop
 cm branch delete br:/main/old-feature
 cm branch rename br:/main/old-name br:/main/new-name
 ```
@@ -303,7 +303,7 @@ cm changeset {command} [options]
 
 **Examples:**
 ```bash
-cm changeset editcomment cs:2721 "Updated comment text"
+cm changeset editcomment cs:150 "Updated comment text"
 cm changeset move cs:100 br:/main/target
 ```
 
@@ -357,7 +357,7 @@ cm label {command} [options]
 
 **Examples:**
 ```bash
-cm label create v1.0 cs:2721
+cm label create v1.0 cs:150
 cm label delete lb:old-label
 ```
 
@@ -395,10 +395,10 @@ Shows current workspace info including branch, changeset, and repository.
 
 **Output format (Korean locale):**
 ```
-브랜치 /main/Alpha2@RepoName@ServerName
+브랜치 /main/develop@MyRepo@localhost:8087
 ```
 
 **Output format (English locale):**
 ```
-Branch /main/Alpha2@RepoName@ServerName
+Branch /main/develop@MyRepo@localhost:8087
 ```

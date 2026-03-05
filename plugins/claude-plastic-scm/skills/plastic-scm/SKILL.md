@@ -40,8 +40,8 @@ For detailed command documentation, see `references/cm-commands.md`.
 
 | Type | Format | Example |
 |------|--------|---------|
-| Changeset | `cs:{id}` | `cs:2721` |
-| Branch | `br:{path}` | `br:/main/Alpha2` |
+| Changeset | `cs:{id}` | `cs:150` |
+| Branch | `br:{path}` | `br:/main/develop` |
 | Label | `lb:{name}` | `lb:v1.0` |
 | Shelve | `sh:{id}` | `sh:5` |
 | Revision | `rev:{path}#cs:{id}` | `rev:file.cs#cs:100` |

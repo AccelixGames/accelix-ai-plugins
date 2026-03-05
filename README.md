@@ -1,4 +1,4 @@
-# claude-plugins-accelix
+# accelix-ai-plugins
 
 AccelixGames 팀 전용 Claude Code 플러그인 마켓플레이스입니다.
 
@@ -16,7 +16,7 @@ claude plugin install claude-plastic-scm
 
 ```bash
 # 마켓플레이스 + 플러그인 모두 업데이트
-claude plugin marketplace update claude-plugins-accelix
+claude plugin marketplace update accelix-ai-plugins
 claude plugin update claude-plastic-scm
 ```
 
