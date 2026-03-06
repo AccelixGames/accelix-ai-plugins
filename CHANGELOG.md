@@ -6,6 +6,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [1.6.0] - 2026-03-06
+
+### 추가
+- claude-plastic-scm v1.5.0: `/cm-comment` 코멘트 전용 커맨드 추가
+
 ## [1.5.0] - 2026-03-06
 
 ### 변경

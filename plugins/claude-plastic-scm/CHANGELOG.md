@@ -3,6 +3,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [1.5.0] - 2026-03-06
+
+### 추가
+- `/cm-comment` — 체크인 없이 코멘트만 생성·미리보기·기존 체인지셋에 적용
+
 ## [1.4.0] - 2026-03-06
 
 ### 추가

@@ -98,6 +98,7 @@ This plugin also provides slash commands for common workflows:
 | Command | Purpose |
 |---------|---------|
 | `/cm-checkin` | Checkin with auto-generated comment |
+| `/cm-comment` | Generate comment only (preview or apply to changeset) |
 | `/cm-merge-comment` | Consolidate merge comments |
 | `/cm-branch-info` | Branch overview and merge history |
 | `/cm-status` | Categorized workspace status |
