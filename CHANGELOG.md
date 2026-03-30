@@ -6,6 +6,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [2.0.0] - 2026-03-30
+
+### 추가
+- generate-image v0.1.0: AI 이미지 생성 플러그인 — Ideation(분기 탐색) + Detail(멀티뷰 정제) 모드, Gemini/Imagen MCP 기반
+
 ## [1.9.0] - 2026-03-20
 
 ### 추가

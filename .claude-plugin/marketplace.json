@@ -28,6 +28,17 @@
       },
       "source": "./plugins/win-file-tools",
       "category": "productivity"
+    },
+    {
+      "name": "generate-image",
+      "description": "AI image generation for game design communication — ideation and detail modes via Gemini/Imagen MCP",
+      "version": "0.1.0",
+      "author": {
+        "name": "AccelixGames",
+        "email": "accelix.staff@gmail.com"
+      },
+      "source": "./plugins/generate-image",
+      "category": "design"
     }
   ]
 }
