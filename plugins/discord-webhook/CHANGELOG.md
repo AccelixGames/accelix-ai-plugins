@@ -3,6 +3,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.4.0] - 2026-04-03
+
+### 변경
+- config 로딩: `!` backtick 제거, Read-first 방식으로 단순화 — 동일 비용 + 분기 제거 + Context 오염 해소
+
 ## [0.3.0] - 2026-04-03
 
 ### 수정

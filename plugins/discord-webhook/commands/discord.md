@@ -4,10 +4,6 @@ description: Send message to Discord via webhook (디스코드 웹훅 메시지 
 argument-hint: "[channel] \"message\" [--file path] [--file-content filename]"
 ---
 
-## Context
-
-- Config: !`cat .discord-webhook/config.json 2>/dev/null || echo "CONFIG_NOT_FOUND"`
-
 ## Your task
 
 Send a Discord message via webhook. Parse the user's arguments, resolve the target channel and mentions from config, then deliver via `send.sh`.
@@ -27,11 +23,10 @@ The user provides arguments in this format:
 
 ### Step 1: Load config
 
-The config may be pre-loaded in the Context section above via `!` backtick injection.
+Read `.discord-webhook/config.json` from the project root using the Read tool.
 
-- If the config JSON is visible in Context, use it directly and proceed to Step 2.
-- If `CONFIG_NOT_FOUND` appeared in Context, try reading `.discord-webhook/config.json` from the project root using the Read tool. If found, use it and proceed to Step 2.
-- If the config truly does not exist (Read also fails), ask the user:
+- If found, proceed to Step 2.
+- If the file does not exist, ask the user:
 
   > "Discord webhook 설정이 없습니다. 지금 만들까요?"
 

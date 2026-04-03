@@ -6,6 +6,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [2.4.0] - 2026-04-03
+
+### 변경
+- discord-webhook v0.4.0: backtick 제거, Read-first config 로딩
+
 ## [2.3.0] - 2026-04-03
 
 ### 변경
