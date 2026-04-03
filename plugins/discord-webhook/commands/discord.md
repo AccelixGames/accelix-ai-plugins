@@ -6,7 +6,7 @@ argument-hint: "[channel] \"message\" [--file path] [--file-content filename]"
 
 ## Context
 
-- Config: !`cat "$(git rev-parse --show-toplevel 2>/dev/null)/.discord-webhook/config.json" 2>/dev/null || echo "CONFIG_NOT_FOUND"`
+- Config: !`cat .discord-webhook/config.json 2>/dev/null || echo "CONFIG_NOT_FOUND"`
 
 ## Your task
 
@@ -27,10 +27,11 @@ The user provides arguments in this format:
 
 ### Step 1: Load config
 
-The config is already injected in the Context section above. Do NOT read it again with the Read tool.
+The config may be pre-loaded in the Context section above via `!` backtick injection.
 
-- If the config JSON is visible in Context, proceed silently to Step 2.
-- If `CONFIG_NOT_FOUND` appeared in Context above, ask the user:
+- If the config JSON is visible in Context, use it directly and proceed to Step 2.
+- If `CONFIG_NOT_FOUND` appeared in Context, try reading `.discord-webhook/config.json` from the project root using the Read tool. If found, use it and proceed to Step 2.
+- If the config truly does not exist (Read also fails), ask the user:
 
   > "Discord webhook 설정이 없습니다. 지금 만들까요?"
 
@@ -76,6 +77,12 @@ If a channel name was explicitly provided but does not exist in config, stop and
 
 Scan the message for mention intent (natural-language references to people or teams).
 
+**@everyone / @here detection (priority — check first):**
+- "모두", "전부", "전체", "다 태그", "모든 팀원", "everyone" → insert `@everyone` in message
+- "온라인", "접속 중", "here" → insert `@here` in message
+- When using @everyone or @here, set `"allowed_mentions": {"parse": ["everyone"]}`. Do NOT combine `parse` with `users`/`roles` arrays. Skip individual mention processing below.
+
+**Individual mention processing:**
 For each detected mention intent:
 1. Search `mentions.users` values (comma-separated aliases) for a match.
 2. Search `mentions.roles` values (comma-separated aliases) for a match.

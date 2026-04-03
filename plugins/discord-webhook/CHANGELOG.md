@@ -3,6 +3,12 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.3.0] - 2026-04-03
+
+### 수정
+- config 로딩: backtick 실패 시 Read tool fallback 추가 — CWD 무관하게 config 탐지
+- "모두 태그" 요청 시 개별 유저 나열 대신 `@everyone` / `@here` 사용하도록 규칙 추가
+
 ## [0.2.0] - 2026-04-03
 
 ### 수정
