@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -uo pipefail
+# set -e 제거 — 개별 실패를 직접 처리, 스크립트 중단 방지
 
 # ============================================================
 # AccelixGames 팀 온보딩 스크립트
 # 신규 팀원이 1회 실행하면 Claude Code 환경이 세팅됩니다.
+# 이미 설치된 항목은 자동 스킵하고, 구버전은 업데이트합니다.
+# 몇 번을 돌려도 안전합니다 (멱등성 보장).
 # ============================================================
+
+ERRORS=0
 
 echo "=== AccelixGames Team Setup ==="
 echo ""
@@ -13,74 +18,122 @@ echo ""
 check_cmd() {
   if ! command -v "$1" &>/dev/null; then
     echo "❌ $1 이(가) 설치되어 있지 않습니다."
-    echo "   $2"
-    exit 1
+    echo "   설치: $2"
+    ERRORS=$((ERRORS + 1))
+    return 1
   fi
   echo "✅ $1 확인됨"
+  return 0
 }
 
-check_cmd "node"   "https://nodejs.org 에서 Node.js 20+ 설치"
+check_cmd "node"   "https://nodejs.org (v20+)"
 check_cmd "npm"    "Node.js 설치 시 함께 설치됩니다"
-check_cmd "git"    "https://git-scm.com 에서 Git 설치"
-check_cmd "claude" "https://docs.anthropic.com/en/docs/claude-code 에서 Claude Code 설치"
+check_cmd "git"    "https://git-scm.com"
+check_cmd "claude" "https://docs.anthropic.com/en/docs/claude-code"
+
+if [ $ERRORS -gt 0 ]; then
+  echo ""
+  echo "⛔ 전제조건 ${ERRORS}개 미충족. 위 안내에 따라 설치 후 다시 실행해주세요."
+  exit 1
+fi
 
 echo ""
 
 # ── 1. 마켓플레이스 등록 ──────────────────────────────────
 echo "--- 마켓플레이스 등록 ---"
 
-# 공식 마켓플레이스 (superpowers, frontend-design, skill-creator 등)
-echo "📦 claude-plugins-official (Anthropic 공식)"
-claude plugin marketplace add anthropics/claude-plugins-official 2>/dev/null || echo "   (이미 등록됨)"
+register_marketplace() {
+  local name="$1" repo="$2" desc="$3"
+  echo "📦 $name ($desc)"
+  if claude plugin marketplace add "$repo" 2>&1 | grep -qi "already"; then
+    echo "   (이미 등록됨)"
+  elif [ $? -ne 0 ]; then
+    echo "   ⚠️  등록 실패 — 수동 확인 필요: claude plugin marketplace add $repo"
+    ERRORS=$((ERRORS + 1))
+  fi
+}
 
-# 팀 마켓플레이스 (generate-image, discord-webhook, plastic-scm, win-file-tools, prof-oak-explain)
-echo "📦 accelix-ai-plugins (팀 전용)"
-claude plugin marketplace add AccelixGames/accelix-ai-plugins 2>/dev/null || echo "   (이미 등록됨)"
+register_marketplace "claude-plugins-official" "anthropics/claude-plugins-official" "Anthropic 공식"
+register_marketplace "accelix-ai-plugins"      "AccelixGames/accelix-ai-plugins"    "팀 전용"
 
 echo ""
 
-# ── 2. 플러그인 설치 ─────────────────────────────────────
+# ── 2. 플러그인 설치/업데이트 ────────────────────────────
 echo "--- 플러그인 설치 ---"
 
+install_plugin() {
+  local plugin="$1" marketplace="$2" label="$3"
+  local full="${plugin}@${marketplace}"
+  echo "📥 $plugin ($label)"
+
+  # 설치 시도 — 이미 있으면 update
+  output=$(claude plugin install "$full" 2>&1) || true
+
+  if echo "$output" | grep -qi "already installed\|already exists"; then
+    # 이미 설치됨 → 업데이트 시도
+    update_output=$(claude plugin update "$full" 2>&1) || true
+    if echo "$update_output" | grep -qi "up to date\|no update"; then
+      echo "   ✅ 최신 버전"
+    elif echo "$update_output" | grep -qi "updated\|success"; then
+      echo "   🔄 업데이트 완료"
+    else
+      echo "   ✅ 설치됨"
+    fi
+  elif echo "$output" | grep -qi "success\|installed"; then
+    echo "   ✅ 새로 설치 완료"
+  else
+    echo "   ⚠️  설치 실패 — 수동 확인: claude plugin install $full"
+    ERRORS=$((ERRORS + 1))
+  fi
+}
+
 # 공식 플러그인
-for plugin in frontend-design skill-creator; do
-  echo "📥 $plugin (공식)"
-  claude plugin install "${plugin}@claude-plugins-official" 2>/dev/null || echo "   (이미 설치됨)"
-done
+install_plugin "frontend-design" "claude-plugins-official" "공식"
+install_plugin "skill-creator"   "claude-plugins-official" "공식"
 
 # 팀 플러그인
-for plugin in claude-plastic-scm generate-image win-file-tools discord-webhook prof-oak-explain; do
-  echo "📥 $plugin (팀)"
-  claude plugin install "${plugin}@accelix-ai-plugins" 2>/dev/null || echo "   (이미 설치됨)"
-done
+install_plugin "claude-plastic-scm" "accelix-ai-plugins" "팀"
+install_plugin "generate-image"     "accelix-ai-plugins" "팀"
+install_plugin "win-file-tools"     "accelix-ai-plugins" "팀"
+install_plugin "discord-webhook"    "accelix-ai-plugins" "팀"
+install_plugin "prof-oak-explain"   "accelix-ai-plugins" "팀"
 
 echo ""
 
 # ── 3. CLI 도구 설치 ─────────────────────────────────────
 echo "--- CLI 도구 설치 ---"
 
-# Google Workspace CLI (gws)
-if command -v gws &>/dev/null; then
-  echo "✅ gws 이미 설치됨 ($(gws --version 2>/dev/null | head -1))"
-else
-  echo "📥 gws (Google Workspace CLI) 설치 중..."
-  npm install -g @googleworkspace/cli
-  echo "✅ gws 설치 완료"
-fi
+install_npm_global() {
+  local name="$1" package="$2" check_cmd="$3"
 
-# @google/genai (generate-image CLI 래퍼용)
-if node -e "require('@google/genai')" 2>/dev/null; then
-  echo "✅ @google/genai 이미 설치됨"
-else
-  echo "📥 @google/genai 설치 중..."
-  npm install -g @google/genai
-  echo "✅ @google/genai 설치 완료"
-fi
+  if eval "$check_cmd" 2>/dev/null; then
+    echo "✅ $name 이미 설치됨"
+  else
+    echo "📥 $name 설치 중..."
+    if npm install -g "$package" 2>&1; then
+      echo "   ✅ $name 설치 완료"
+    else
+      echo "   ⚠️  $name 설치 실패"
+      echo "   수동 설치: npm install -g $package"
+      echo "   (권한 문제 시: sudo npm install -g $package)"
+      ERRORS=$((ERRORS + 1))
+    fi
+  fi
+}
+
+install_npm_global "gws (Google Workspace CLI)" "@googleworkspace/cli" "command -v gws"
+install_npm_global "@google/genai"              "@google/genai"        "node -e \"require('@google/genai')\""
 
 echo ""
 
-# ── 4. 완료 ──────────────────────────────────────────────
-echo "=== 설정 완료! ==="
+# ── 4. 결과 리포트 ───────────────────────────────────────
+if [ $ERRORS -eq 0 ]; then
+  echo "=== ✅ 설정 완료! ==="
+else
+  echo "=== ⚠️  설정 완료 (경고 ${ERRORS}개) ==="
+  echo "위 ⚠️ 항목을 수동으로 확인해주세요."
+fi
+
 echo ""
 echo "다음 단계:"
 echo "  1. Gemini API key 설정 (이미지 생성 사용 시):"
