@@ -39,25 +39,37 @@ while [ $# -gt 0 ]; do
     esac
 done
 
+# Temp files for response
+tmp_body=$(mktemp)
+tmp_headers=$(mktemp)
+trap 'rm -f "$tmp_body" "$tmp_headers"' EXIT
+
 # Send request
+# NOTE: -w (write-out) causes exit code 43 on Windows Schannel due to TLS
+# renegotiation. Use -D (dump headers) + parse instead.
 if [ -z "$attach_file" ]; then
     # Text-only message
-    response=$(curl -s -w '\n%{http_code}' \
+    curl -s -o "$tmp_body" -D "$tmp_headers" \
         -H "Content-Type: application/json" \
         -d "@${payload_file}" \
-        "$webhook_url" 2>&1)
+        "$webhook_url" 2>/dev/null
 else
     # Message with file attachment (multipart/form-data)
-    # Use <file syntax to read payload directly — avoids shell encoding corruption on Windows
-    response=$(curl -s -w '\n%{http_code}' \
+    curl -s -o "$tmp_body" -D "$tmp_headers" \
         -F "payload_json=<${payload_file}" \
         -F "file=@${attach_file}" \
-        "$webhook_url" 2>&1)
+        "$webhook_url" 2>/dev/null
 fi
 
-# Extract HTTP status code (last line)
-http_code=$(echo "$response" | tail -1)
-body=$(echo "$response" | sed '$d')
+curl_exit=$?
+if [ $curl_exit -ne 0 ]; then
+    echo "ERROR: curl failed with exit code $curl_exit" >&2
+    exit 1
+fi
+
+# Extract HTTP status code from headers
+http_code=$(awk '/^HTTP\// { code=$2 } END { print code }' "$tmp_headers")
+body=$(cat "$tmp_body")
 
 # Output body if present
 [ -n "$body" ] && echo "$body"
@@ -67,6 +79,6 @@ if [[ "$http_code" =~ ^2[0-9][0-9]$ ]]; then
     echo "$http_code"
     exit 0
 else
-    echo "$http_code" >&2
+    echo "${http_code:-000}" >&2
     exit 1
 fi
