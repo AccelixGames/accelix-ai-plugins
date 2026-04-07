@@ -2,11 +2,11 @@
 name: wiki
 description: >
   LLM Wiki (Karpathy) — Modes: ingest (소스→wiki 컴파일), query (wiki 검색·응답),
-  lint (승격·검증·정리), session (세션 기록).
-  Triggers: 'ingest', 'add to wiki', 'wiki query', 'wiki lint', 'wiki search',
-  'wiki health', 'session log', 'wiki에 추가', 'wiki 검색', 'wiki 건전성'.
+  context (작업 전 관련 지식 surface), lint (승격·검증·정리), session (세션 기록).
+  Triggers: 'ingest', 'add to wiki', 'wiki query', 'wiki context', 'wiki lint',
+  'wiki search', 'wiki health', 'session log', 'wiki에 추가', 'wiki 검색', 'wiki 건전성'.
   Also use when user says /wiki with or without arguments.
-argument-hint: "ingest | query | lint | session"
+argument-hint: "ingest | query | context | lint | session"
 ---
 
 # Wiki Workflow — Karpathy LLM Wiki Pattern
