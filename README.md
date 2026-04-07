@@ -29,6 +29,7 @@ claude plugin install prof-oak-explain@accelix-ai-plugins
 claude plugin install chatgpt-agent@accelix-ai-plugins
 claude plugin install gemini-agent@accelix-ai-plugins
 claude plugin install research@accelix-ai-plugins
+claude plugin install wiki@accelix-ai-plugins
 ```
 
 ## 업데이트
@@ -44,6 +45,7 @@ claude plugin update prof-oak-explain@accelix-ai-plugins
 claude plugin update chatgpt-agent@accelix-ai-plugins
 claude plugin update gemini-agent@accelix-ai-plugins
 claude plugin update research@accelix-ai-plugins
+claude plugin update wiki@accelix-ai-plugins
 ```
 
 ---
@@ -60,6 +62,7 @@ claude plugin update research@accelix-ai-plugins
 | [chatgpt-agent](plugins/chatgpt-agent/) | v0.1.0 | ChatGPT 서브에이전트 — Codex CLI 기반, ChatGPT Plus 인증 |
 | [gemini-agent](plugins/gemini-agent/) | v0.1.0 | Gemini 서브에이전트 — 구현+리뷰 위임, Gemini CLI 기반 |
 | [research](plugins/research/) | v0.1.0 | 인터넷 조사 — 키워드 협업 루프로 검색 정밀도 향상 |
+| [wiki](plugins/wiki/) | v0.1.0 | LLM Wiki (Karpathy) — Obsidian CLI 기반 프로젝트 지식 관리 |
 
 ---
 

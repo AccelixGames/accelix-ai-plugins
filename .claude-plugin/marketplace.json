@@ -94,6 +94,17 @@
       },
       "source": "./plugins/prof-oak-explain",
       "category": "education"
+    },
+    {
+      "name": "wiki",
+      "description": "LLM Wiki (Karpathy pattern) — persistent, compounding project knowledge via Obsidian CLI",
+      "version": "0.1.0",
+      "author": {
+        "name": "AccelixGames",
+        "email": "accelix.staff@gmail.com"
+      },
+      "source": "./plugins/wiki",
+      "category": "knowledge-management"
     }
   ]
 }

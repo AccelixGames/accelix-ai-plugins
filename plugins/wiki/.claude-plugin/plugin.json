@@ -1,0 +1,12 @@
+{
+  "name": "wiki",
+  "version": "0.1.0",
+  "description": "LLM Wiki (Karpathy pattern) — persistent, compounding project knowledge via Obsidian CLI",
+  "author": {
+    "name": "AccelixGames",
+    "email": "accelix.staff@gmail.com"
+  },
+  "repository": "https://github.com/AccelixGames/accelix-ai-plugins",
+  "license": "MIT",
+  "keywords": ["wiki", "obsidian", "knowledge-management", "karpathy", "llm-wiki"]
+}
