@@ -55,11 +55,10 @@ After the required sections, write whatever the next agent needs to know — in 
 
 ## Step 3: Save and Copy to Clipboard
 
-Determine the script path relative to this command file:
+Pipe the handover text via heredoc directly to the script (no `cat` — avoids rtk UTF-8 corruption):
 
 ```bash
-SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo "${BASH_SOURCE[0]}")")/../scripts" && pwd)"
-rtk python "$SCRIPT_DIR/handover-clip.py" << 'EOF'
+rtk python ~/.claude/plugins/marketplaces/*/plugins/handover/scripts/handover-clip.py << 'EOF'
 <handover content here>
 EOF
 ```
