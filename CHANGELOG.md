@@ -6,6 +6,16 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [2.7.0] - 2026-04-07
+
+### 추가
+- gemini-agent v0.1.0: Gemini 서브에이전트 CLI 래퍼 — 구현+리뷰 위임, Gemini CLI 기반, GEMINI_API_KEY 인증
+
+### 변경
+- 온보딩 스크립트 동기화: marketplace.json에 prof-oak-explain·gemini-agent 등록, generate-image 버전 0.2.0 반영
+- team-setup.sh: gemini-agent·research 설치 추가, Gemini CLI 도구 추가, gstack 섹션 제거
+- README.md: chatgpt-agent·gemini-agent·research 추가, 플러그인 버전 테이블 최신화
+
 ## [2.6.0] - 2026-04-06
 
 ### 추가

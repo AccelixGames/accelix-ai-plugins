@@ -1,0 +1,9 @@
+{
+  "name": "gemini-agent",
+  "version": "0.1.0",
+  "description": "Gemini subagent CLI wrapper — Claude가 Gemini CLI를 통해 구현/리뷰 작업을 위임할 수 있는 범용 도구",
+  "author": { "name": "AccelixGames", "email": "accelix.staff@gmail.com" },
+  "repository": "https://github.com/AccelixGames/accelix-ai-plugins",
+  "license": "MIT",
+  "keywords": ["gemini", "google", "subagent", "implementation", "review", "cross-validation"]
+}

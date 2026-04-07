@@ -26,6 +26,9 @@ claude plugin install win-file-tools@accelix-ai-plugins
 claude plugin install generate-image@accelix-ai-plugins
 claude plugin install discord-webhook@accelix-ai-plugins
 claude plugin install prof-oak-explain@accelix-ai-plugins
+claude plugin install chatgpt-agent@accelix-ai-plugins
+claude plugin install gemini-agent@accelix-ai-plugins
+claude plugin install research@accelix-ai-plugins
 ```
 
 ## 업데이트
@@ -38,6 +41,9 @@ claude plugin update win-file-tools@accelix-ai-plugins
 claude plugin update generate-image@accelix-ai-plugins
 claude plugin update discord-webhook@accelix-ai-plugins
 claude plugin update prof-oak-explain@accelix-ai-plugins
+claude plugin update chatgpt-agent@accelix-ai-plugins
+claude plugin update gemini-agent@accelix-ai-plugins
+claude plugin update research@accelix-ai-plugins
 ```
 
 ---
@@ -46,11 +52,14 @@ claude plugin update prof-oak-explain@accelix-ai-plugins
 
 | 플러그인 | 버전 | 설명 |
 |----------|------|------|
-| [claude-plastic-scm](plugins/claude-plastic-scm/) | v0.1.0 | PlasticSCM (Unity Version Control) 워크플로우 자동화 |
+| [claude-plastic-scm](plugins/claude-plastic-scm/) | v1.7.0 | PlasticSCM (Unity Version Control) 워크플로우 자동화 |
 | [generate-image](plugins/generate-image/) | v0.2.0 | AI 이미지 생성 — Ideation + Detail 모드, MCP + CLI 래퍼 |
 | [win-file-tools](plugins/win-file-tools/) | v0.1.0 | Windows 문서 도구 — PDF/DOCX/Excel/HWP 읽기 + HWP 생성 |
 | [discord-webhook](plugins/discord-webhook/) | v0.4.0 | Discord 웹훅 메시지 — 채널 선택, 멘션, 파일 첨부 |
 | [prof-oak-explain](plugins/prof-oak-explain/) | v0.1.0 | 문과식 설명 + 기술 교육 — 비유 기반 기술 개념 해설 |
+| [chatgpt-agent](plugins/chatgpt-agent/) | v0.1.0 | ChatGPT 서브에이전트 — Codex CLI 기반, ChatGPT Plus 인증 |
+| [gemini-agent](plugins/gemini-agent/) | v0.1.0 | Gemini 서브에이전트 — 구현+리뷰 위임, Gemini CLI 기반 |
+| [research](plugins/research/) | v0.1.0 | 인터넷 조사 — 키워드 협업 루프로 검색 정밀도 향상 |
 
 ---
 
@@ -62,7 +71,8 @@ claude plugin update prof-oak-explain@accelix-ai-plugins
 |------|--------|------|
 | gws | `@googleworkspace/cli` | Google Sheets/Docs/Drive 연동 |
 | @google/genai | `@google/genai` | generate-image CLI 래퍼 (서브에이전트용) |
-| 공식 플러그인 | `claude-plugins-official` | superpowers, frontend-design 등 |
+| Gemini CLI | `@google/gemini-cli` | gemini-agent 서브에이전트 백엔드 |
+| 공식 플러그인 | `claude-plugins-official` | superpowers, frontend-design, skill-creator, figma, notion |
 
 ---
 
