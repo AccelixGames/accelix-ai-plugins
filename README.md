@@ -30,6 +30,7 @@ claude plugin install chatgpt-agent@accelix-ai-plugins
 claude plugin install gemini-agent@accelix-ai-plugins
 claude plugin install research@accelix-ai-plugins
 claude plugin install wiki@accelix-ai-plugins
+claude plugin install handover@accelix-ai-plugins
 ```
 
 ## 업데이트
@@ -46,6 +47,7 @@ claude plugin update chatgpt-agent@accelix-ai-plugins
 claude plugin update gemini-agent@accelix-ai-plugins
 claude plugin update research@accelix-ai-plugins
 claude plugin update wiki@accelix-ai-plugins
+claude plugin update handover@accelix-ai-plugins
 ```
 
 ---
@@ -63,6 +65,7 @@ claude plugin update wiki@accelix-ai-plugins
 | [gemini-agent](plugins/gemini-agent/) | v0.1.0 | Gemini 서브에이전트 — 구현+리뷰 위임, Gemini CLI 기반 |
 | [research](plugins/research/) | v0.1.0 | 인터넷 조사 — 키워드 협업 루프로 검색 정밀도 향상 |
 | [wiki](plugins/wiki/) | v0.1.0 | LLM Wiki (Karpathy) — Obsidian CLI 기반 프로젝트 지식 관리 |
+| [handover](plugins/handover/) | v1.0.0 | 세션 핸드오버 문서 생성 + 클립보드 복사 |
 
 ---
 
