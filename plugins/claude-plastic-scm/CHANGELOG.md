@@ -3,6 +3,20 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [1.9.0] - 2026-04-18
+
+### 추가
+- 전 스킬 `Step 0 — Workspace guard`: frontmatter `!cm ...` pre-load에 `|| echo "NOT_A_WORKSPACE"` sentinel 추가. non-workspace(예: git repo)에서 호출 시 "Shell command failed for pattern"으로 죽던 로딩 실패를 친절한 조기 종료로 대체. 영향: cm-status, cm-branch-info, cm-comment, cm-compile-check, cm-hidden, cm-merge-comment, cm-checkin (7개).
+
+### 변경
+- **destructive 스킬에 `disable-model-invocation: true` 추가** — Claude 자동 호출 차단, 수동 `/cmd` 호출만 허용. 대상: `/cm-checkin`, `/cm-comment`, `/cm-hidden`, `/cm-merge-comment`. read-only 스킬(status/diff/history/branch-info/compile-check)은 자동 호출 유지.
+- `allowed-tools` 포맷을 YAML list로 통일 (공식 스펙 권장; 이전 콤마 구분은 비규격).
+- `description` front-load 재작성: 영어 요약 + 한국어 trigger keywords. 1536-char cap 대비 모두 ~11-18% 수준.
+- 본문 전면 영어화 + 압축 (총 크기 -14%; 모든 step/rule/guard는 보존).
+
+### 수정
+- non-workspace에서 `/cm-checkin` 등 호출 시 pre-load가 exit 1을 반환해 skill 본문이 로드되지 않던 문제.
+
 ## [1.8.1] - 2026-04-10
 
 ### 추가
