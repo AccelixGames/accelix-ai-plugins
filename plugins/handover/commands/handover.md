@@ -51,6 +51,7 @@ Add whatever the next session needs: absolute-path file references, reasoning ch
 - English only (AI token optimization)
 - Terse, no filler
 - File references: absolute path as link, period. Never re-explain file contents — the next session reads the file itself
+- **External research** (URLs, third-party repos, fetched docs investigated this session) must first be saved as a project file (e.g., `.temp/research/<source>-YYYY-MM-DD.md` with `source`/`fetched_at`/`fetched_via` frontmatter), then referenced by absolute path. Never leave an external URL reachable only via conversation history.
 - **Content criterion**: EVERY rejected option, agreement, trade-off, and blocker from THIS conversation must be captured. Length is whatever that requires.
 
 ## Step 3: Optional Independent Review
