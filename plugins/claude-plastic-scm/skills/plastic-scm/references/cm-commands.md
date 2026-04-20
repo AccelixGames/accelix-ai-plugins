@@ -89,6 +89,32 @@ cm checkin Assets/Scripts/ -c="Refactored player controller"
 cm checkin --all -c="Full sync"
 ```
 
+### ⚠️ CH Hash-Equal Trap — atomic checkin fails on touched-but-equal files
+
+Plastic's "변경됨/Changed" (CH) state conflates two distinct conditions:
+
+1. **Content changed** — file hash differs from HEAD. Legitimate change.
+2. **Touched but hash-equal** — mtime/size/attribute changed (e.g., Unity reimport rewrote the file byte-identically, or an external tool touched it) but content hash equals HEAD.
+
+`cm checkin` is **atomic**: if any path in the batch is condition (2), the server rejects it as "unchanged" and rolls back the **entire** batch — including real changes in the same call.
+
+**Symptoms in output:**
+```
+server: <path> ... unchanged
+client: 체크인 중단됨 / checkin aborted
+```
+
+**Recovery (pick one):**
+
+| Approach | Command | When to use |
+|----------|---------|-------------|
+| Drop the offender | `cm undo "<touched-but-equal-path>"` | You don't care about the hash-equal file |
+| Force explicit checkout | `cm co "<touched-but-equal-path>"` | You want the file in the changeset regardless (the checkout flag bypasses the server's hash check) |
+
+Then re-run `cm checkin` with the original batch.
+
+**Detection hint:** if `cm status` shows 변경됨 files but `cm cat "serverpath:<path>#cs:<HEAD>" | diff - <path>` shows no byte difference, the file is condition (2).
+
 ---
 
 ## status
