@@ -3,6 +3,34 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [1.13.0] - 2026-04-20
+
+### 추가 — Phase 3: Hook 기반 auto-capture + Post-task Reflection 프로토콜
+
+- **PostToolUse hook** (`hooks/hooks.json` + `hooks/reflect-destructive-cm.sh`) — Bash tool 사용이 `cm (checkin|merge|label)`와 매칭되고 exit 0이면 `additionalContext` JSON으로 reflection 알림 inject. 3-gate 필터(tool_name=Bash, regex 매칭, exit 0)로 과도 발화 차단.
+- **SKILL.md `## Post-task Reflection` 섹션** — 5-step 프로토콜: friction 평가 → 0시 skip, ≥1시 유저 질문 → Y→gotcha 이슈 생성, N→기록 skip. `/cm-lint` 자동 실행 없음 (capture와 processing 의도적 분리).
+- **`templates/reflection-prompt.md`** — 5개 friction signal(재시도 / 우회 / 추정 / 에러처리 / 문서재조회) + 유저 질문 한국어 템플릿 + Y/N 응답 핸들링. 모든 signal=0이면 묻지 않음.
+
+### 설계 결정 (locked)
+
+- 트리거: **PostToolUse** (아님: UserPromptSubmit, Stop)
+- 매처: `matcher: "Bash"` + script 내부 regex (if:는 정규식 미지원)
+- 필터 정확성: `cm status/log/find/diff/cat` 등 read-only 제외
+- 출력: `additionalContext` JSON (도구 호출 트리거 불가)
+- Friction 판단: Claude 자가 평가 (세션 로그 scanning은 크로스플랫폼 불안정)
+- 실패 모드: hook script 에러는 exit 0으로 조용히 삼킴 (cm 커맨드 retroactive 차단 금지)
+
+### 알려진 한계
+
+- 인용문 내 `cm checkin` 같은 false-positive 가능 — friction signal 0으로 자연 필터됨
+- `jq` 미설치 환경에서 hook 조용히 skip (Windows Git Bash / 대부분 dev env 기본 포함)
+- `cm merge --to=<branch>`는 현재 regex 매치됨 (원한 바). 다른 server-side 변형 필요 시 regex 확장
+
+### 검증
+
+- 합성 stdin 테스트 3건 (positive / wrong-subcmd / non-zero exit) 수동 통과
+- live 검증은 v1.13.0 릴리스 후 첫 실사용에서 자동 발생
+
 ## [1.12.0] - 2026-04-20
 
 첫 `/cm-lint` 실전 세션 (3 clusters docs overhaul). gotcha 이슈 #2/#3/#4 일괄 처리. 4-gate 전부 통과.
