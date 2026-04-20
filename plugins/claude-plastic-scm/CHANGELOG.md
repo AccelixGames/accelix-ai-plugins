@@ -3,6 +3,14 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [1.10.1] - 2026-04-20
+
+### 수정
+- `references/cm-commands.md` `label` 섹션 대폭 확장. 기존에 옵션 테이블이 비어 있어 코멘트 부여 문법을 추정하다 `cm label ... --comment="..."` (double-dash)로 호출해 `label: 예상치 못한 옵션 --comment` 에러가 반복 발생하던 문제.
+  - 실제 syntax 추가: `cm label [create] <label-spec> <cs-spec> [-c="..." | -commentsfile=...]`
+  - "Option Trap — `--comment` does NOT exist" 경고 섹션 추가. `cm checkin -c=`/`cm merge -c=`와 동일한 single-dash 규칙 명시.
+  - 예제: 코멘트 포함 create, commentsfile 사용, workspace-path 라벨링, rename/delete.
+
 ## [1.10.0] - 2026-04-20
 
 ### 추가

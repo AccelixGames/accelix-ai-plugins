@@ -444,19 +444,52 @@ cm update [options]
 Manage labels (tags).
 
 ```
-cm label {command} [options]
+cm label [create] {label-spec} [{changeset-spec} | {workspace-path}] [options]
+cm label {delete|rename} {label-spec} [...]
 ```
 
 | Command | Description |
 |---------|-------------|
-| `create` / `mk` | Create label |
+| `create` / `mk` (default) | Create label on a changeset or the workspace's current cset |
 | `delete` / `rm` | Delete label |
 | `rename` | Rename label |
 
+### create options
+
+| Option | Description |
+|--------|-------------|
+| `-c="{comment}"` | Apply comment to the new label |
+| `-commentsfile="{file}"` | Read comment from file |
+| `--allxlinkedrepositories` | Create the label in every Xlink'd repo too |
+
+### ⚠️ Option Trap — `--comment` does NOT exist on `cm label`
+
+`cm label create` accepts only the **single-dash** `-c="..."` form (same syntax as `cm checkin -c=` / `cm merge -c=`). Passing the double-dash `--comment="..."` — a natural guess because many CLIs use that shape — fails immediately with:
+
+```
+label: 예상치 못한 옵션 --comment
+label: unexpected option --comment
+```
+
+Ordering matters: put the comment flag **after** the label-spec + changeset-spec, which is the form shown in `cm label create --usage`.
+
 **Examples:**
 ```bash
-cm label create v1.0 cs:150
+# Minimal — the `create` keyword is optional
+cm label lb:v1.0 cs:150
+
+# With comment (correct single-dash form)
+cm label create lb:before-beta-merge-3603 cs:3603 -c="safety: pre /main/beta merge"
+
+# Comment from file (useful for multi-line)
+cm label create lb:release-v2 cs:200 -commentsfile=release-notes.txt
+
+# Label the workspace's current changeset
+cm label lb:current-wip .
+
+# Delete / rename
 cm label delete lb:old-label
+cm label rename lb:old-name lb:new-name
 ```
 
 ---
