@@ -245,6 +245,31 @@ If this skill lacks information about a specific cm command or feature:
 2. Check `references/cm-commands.md` for detailed option lists
 3. If the information is useful, consider adding it to the reference file
 
+## Post-task Reflection
+
+**Triggered by:** PostToolUse hook `reflect-destructive-cm.sh` injecting an `additionalContext` system reminder after a successful `cm checkin`, `cm merge`, or `cm label`.
+
+**When the reminder arrives:**
+
+1. **Evaluate friction.** Open `templates/reflection-prompt.md` and self-evaluate the recent ~5-10 tool uses against the 5 signals (재시도 / 우회 / 추정 / 에러처리 / 문서재조회). Count how many are present.
+
+2. **Zero signals → skip silently.** Do not interrupt the user. Log nothing. Smooth sessions are not capture material.
+
+3. **≥ 1 signal → emit the user question** using the exact Korean template in `reflection-prompt.md` § "User question template". Fill the placeholders — subcommand, signal list, 1-line symptom, 1-line improvement idea.
+
+4. **On user response:**
+   - **Y** → draft a gotcha issue body using `templates/gotcha-template.md` schema. Populate 증상 / 재현 단계 / 시도 / 해결 또는 가설 / 개선안 / 영향 범위 from the session. Create via `MSYS_NO_PATHCONV=1 gh issue create --repo AccelixGames/accelix-ai-plugins --label "skill:plastic-scm,gotcha-open" --title "[cm <subcmd>] <summary>" --body-file <tmp-file>`. Report the issue URL.
+   - **N** or no clear response → acknowledge "기록 skip" in one line. No issue created.
+
+5. **Do not auto-run `/cm-lint`.** Capture is intentionally decoupled from processing. The user processes accumulated issues at their own cadence.
+
+**Scope of this protocol:**
+- Fires only for destructive cm success (hook's 3-gate filter). Never for `cm status`, `cm log`, etc.
+- Reflection is about the *recent work unit* that led to this command, not the whole conversation.
+- Rejecting the capture does not create `gotcha-rejected` — rejection is for triaged issues in `/cm-lint`, not pre-capture skips.
+
+**False-positive note:** the hook regex can fire on non-cm commands that contain the literal string `cm checkin` etc. (e.g., `echo "cm checkin"`). When this happens, your friction signals will be all-zero and step 2 silently skips — no user burden.
+
 ## Environment Notes
 
 - **Windows + Bash tool** — The Bash tool resets cwd between invocations, so repeated
