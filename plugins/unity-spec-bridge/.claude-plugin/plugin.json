@@ -1,6 +1,6 @@
 {
   "name": "unity-spec-bridge",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Bridge skills/commands between spec data and Unity assets — scaffolder for domain skills",
   "author": {
     "name": "AccelixGames",

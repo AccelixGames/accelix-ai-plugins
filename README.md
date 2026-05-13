@@ -68,7 +68,7 @@ claude plugin update unity-spec-bridge@accelix-ai-plugins
 | [research](plugins/research/) | v0.1.0 | 인터넷 조사 — 키워드 협업 루프로 검색 정밀도 향상 |
 | [wiki](plugins/wiki/) | v0.1.0 | LLM Wiki (Karpathy) — Obsidian CLI 기반 프로젝트 지식 관리 |
 | [handover](plugins/handover/) | v1.0.0 | 세션 핸드오버 문서 생성 + 클립보드 복사 |
-| [unity-spec-bridge](plugins/unity-spec-bridge/) | v0.1.1 | 기획 데이터 → Unity 에셋 도메인 스킬 컨테이너 + 스킬 스캐폴더 + unity-cli reference |
+| [unity-spec-bridge](plugins/unity-spec-bridge/) | v0.1.2 | 기획 데이터 → Unity 에셋 도메인 스킬 컨테이너 + 스킬 스캐폴더 + unity-cli reference + where-am-i 세션 self-check |
 
 ---
 

@@ -6,6 +6,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [2.10.2] - 2026-05-13
+
+### 추가
+- unity-spec-bridge v0.1.1 → v0.1.2: `where-am-i` 스킬 이식 (mcs-design-workspace 원본 일반화). 세션 self-check — 4섹션 친근체 보고 + 위험 신호 5종 자동 expand. `handover` plugin과 자연스러운 쌍.
+
 ## [2.10.1] - 2026-05-13
 
 ### 추가

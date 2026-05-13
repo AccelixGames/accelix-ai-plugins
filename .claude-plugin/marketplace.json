@@ -120,7 +120,7 @@
     {
       "name": "unity-spec-bridge",
       "description": "기획 데이터를 Unity 에셋으로 옮기는 도메인 스킬들의 컨테이너 — 새 스킬 스캐폴딩 메타 도구 포함",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "author": {
         "name": "AccelixGames",
         "email": "accelix.staff@gmail.com"
