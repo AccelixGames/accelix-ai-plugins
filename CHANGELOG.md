@@ -6,6 +6,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [2.10.1] - 2026-05-13
+
+### 추가
+- unity-spec-bridge v0.1.0 → v0.1.1: `unity-cli-reference` 스킬 추가 — unity-cli v0.3.x 명령군·옵션·표준 패턴 reference. spec→Unity 적용 워크플로 가이드 포함.
+
 ## [2.10.0] - 2026-05-13
 
 ### 추가
