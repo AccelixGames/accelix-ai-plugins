@@ -1,0 +1,12 @@
+{
+  "name": "design-apply",
+  "version": "0.1.0",
+  "description": "Design hub spec to Unity application workflow — pre-send confirmation messages, tone rules, ProjectMaid docs index",
+  "author": {
+    "name": "AccelixGames",
+    "email": "accelix.staff@gmail.com"
+  },
+  "repository": "https://github.com/AccelixGames/accelix-ai-plugins",
+  "license": "MIT",
+  "keywords": ["design", "spec", "discord", "workflow", "unity", "mcs"]
+}

@@ -6,6 +6,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [2.11.0] - 2026-05-13
+
+### 추가
+- **design-apply v0.1.0 최초 릴리스**: 디자인허브(`mcs-design-workspace`) spec/ADR을 ProjectMaid Unity 워크스페이스에 적용하는 표준 워크플로우. 7단계 순차 + 확인 2회(사전/사후) + 모드 분기(적용/감사). `/design-send-pre <spec-id>` 사전 확인 송신 wrapper(요약 본문 + 상세 md 첨부, 자연어 트리거). PROCESS / presend-tone / ProjectMaid Docs 인덱스 / locale 영역·키 형식 references 포함. ProjectMaid 워크스페이스에서 진행한 wish-pool-jegal 적용 사이클 학습을 plugin으로 이전 — 브랜치 무관 + 곽한규 read-only 공유 모델 지원.
+
 ## [2.10.2] - 2026-05-13
 
 ### 추가

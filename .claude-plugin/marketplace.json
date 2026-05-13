@@ -127,6 +127,17 @@
       },
       "source": "./plugins/unity-spec-bridge",
       "category": "development"
+    },
+    {
+      "name": "design-apply",
+      "description": "디자인허브 spec → ProjectMaid 적용 워크플로우 — 7단계 순차 + 확인 2회(사전/사후) + Discord 사전 확인 송신 wrapper + 톤·룰 references",
+      "version": "0.1.0",
+      "author": {
+        "name": "AccelixGames",
+        "email": "accelix.staff@gmail.com"
+      },
+      "source": "./plugins/design-apply",
+      "category": "development"
     }
   ]
 }
