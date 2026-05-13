@@ -1,0 +1,12 @@
+{
+  "name": "unity-spec-bridge",
+  "version": "0.1.0",
+  "description": "Bridge skills/commands between spec data and Unity assets — scaffolder for domain skills",
+  "author": {
+    "name": "AccelixGames",
+    "email": "accelix.staff@gmail.com"
+  },
+  "repository": "https://github.com/AccelixGames/accelix-ai-plugins",
+  "license": "MIT",
+  "keywords": ["unity", "spec", "scaffolding", "design"]
+}
