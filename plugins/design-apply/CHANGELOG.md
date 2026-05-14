@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.2] - 2026-05-14
+
+### 추가/변경
+
+- `references/PROCESS.md` Section 4 [7] 마무리 단계 — Plastic 워크플로우 통합. 기존 4단계(체크인/인덱스/노티/부수) + 신규 2단계(gd00N → main/beta merge, 새 sandbox `gd00N+1-{spec-id}` 따기)
+- 트리거 명시 — "마무리" / "사이클 종결" / "끝" 의사 표명 시 [7] 6단계 순차 수행
+- 컨플릭트 분기 명시 — merge 5단계에서 충돌 발생 시 GUI 해결 안내 + STOP, 해결 후 사용자 재진입 신호로 재시도
+- partial/full 무관 항상 merge 룰 — deferred 항목 남아도 박은 부분은 main/beta 공유
+
+### 배경
+
+2026-05-14 wish-pool-jegal partial 종결 시 사용자(김규혁)가 "체크인 + merge + 컨플릭트 해결 + 새 브랜치"를 매번 손으로 하다 빠뜨림 발생 우려. 신규 스킬/슬래시 안 만들고 PROCESS [7] 단계 강화로 해결 (YAGNI — 기존 `/cm-checkin`, `/cm-merge-comment`, `cm branch create` 재사용).
+
 ## [0.1.1] - 2026-05-14
 
 ### 추가/변경

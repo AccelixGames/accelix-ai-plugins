@@ -143,11 +143,22 @@ spec이 박힐 ProjectMaid 위치 식별 (SO 필드, locale 키, 컨텐츠, pref
 
 ### [7] 마무리
 
-1. **체크인** — AGENTS-PlasticSCM.md 룰 (한국어 / 상세 / 제목+`[섹션]` / 검증 명시)
-2. **백로그 갱신** — `c:/WorkSpace/AccelixGames/design-apply-local/backlog.md` 행 종결
-3. **spec 상세 갱신** — `design-apply-local/specs/{spec-id}.md` 시도 블록 마무리
-4. **Discord 마무리 노티** — Section 5.3 템플릿
-5. **부수 발견 처리** — outdated/충돌은 디자인허브 측 작업으로 분리 통보 (Section 5.4)
+**트리거**: 기획자가 "마무리" / "사이클 종결" / "끝" 등 의사 표명 시 Claude가 아래 6단계 순차 수행.
+
+1. **체크인** — `/cm-checkin` 슬래시 (AGENTS-PlasticSCM.md 룰: 한국어 / 상세 / 제목+`[섹션]` / 검증 명시). 이미 진행한 경우 스킵.
+2. **인덱스 갱신** — `c:/WorkSpace/AccelixGames/design-apply-local/`
+   - `backlog.md` 해당 행 → `completed.md` 이관 (체크인 cs:N 명시)
+   - `specs/{spec-id}.md` 시도 N 블록 마무리
+   - `deferred.md` 항목 갱신 (있으면)
+3. **Discord 마무리 노티** — Section 5.3 템플릿 (옵션)
+4. **부수 발견 처리** — outdated/충돌은 디자인허브 측 작업으로 분리 통보 (Section 5.4)
+5. **gd00N → main/beta merge** — `/cm-merge-comment /main/beta` 슬래시 사용 (partial이든 full이든 항상 merge)
+   - 성공 → 6단계 진행
+   - **컨플릭트 발생 시** → 사용자에게 PlasticSCM GUI 해결 안내 + STOP. 해결 후 기획자가 [7] 5단계 재진입 신호 보내면 다시 시도
+6. **새 sandbox 따기** — `gd00N+1-{spec-id}` 명명
+   - 다음 spec-id 입력 받음 (예: `gd004-wish-pool-omong`)
+   - `cm branch create gd00N+1-{spec-id} br:/main/beta` + `cm switch br:/main/beta/gd00N+1-{spec-id}`
+   - 다음 spec-id 미정인 경우 → 5단계까지만 진행, 새 브랜치는 다음 사이클 [1] 단계 시작 시 따기
 
 ---
 
