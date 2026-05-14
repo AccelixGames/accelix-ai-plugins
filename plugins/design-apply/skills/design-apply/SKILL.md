@@ -82,14 +82,18 @@ description: >
 
 ## 동적 데이터 (plugin 외)
 
-backlog / spec 상세 / 디스코드 첨부 사본 = 사용자 로컬:
+사용자 로컬 — 3 인덱스 + spec 상세 회고 + 디스코드 첨부 사본:
 
 ```
 c:/WorkSpace/AccelixGames/design-apply-local/
-├── backlog.md
-├── specs/{spec-id}.md
+├── backlog.md                  ← 활성 작업 표 ([3]~[6])
+├── completed.md                ← 완료 history
+├── deferred.md                 ← "예정" 응답 대기 큐
+├── specs/{spec-id}.md          ← 각 spec 상세 회고 (시도 블록 누적)
 └── discord-attachments/{spec-id}-{pre|post|done}.md
 ```
+
+[4]단계 응답 종류 4종 (OK / 추가 정보 / 적용 불가 / **예정**) 중 "예정"은 `deferred.md`로. 알림 받으면 backlog로 재진입.
 
 ## 관련 도구
 

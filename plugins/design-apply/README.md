@@ -50,8 +50,22 @@ backlog / spec 상세 / 디스코드 첨부 사본은 **각 사용자 로컬**�
 
 곽한규 같은 read-only 사용자는 plugin install + Discord 채널 참조로 충분 (backlog 미공유).
 
+## VCS 책임 분담
+
+워크플로우 중 여러 시스템이 등장. 각각 다른 도구로 작업:
+
+| 시스템 | 대상 | 도구 | 언제 |
+|--------|------|------|------|
+| **PlasticSCM** | ProjectMaid 워크스페이스 (Wish asset, 코드 fix 등) | `cm` CLI / `claude-plastic-scm` plugin (`cm-checkin` 등) | spec 적용 [5]단계 결과 박은 후 |
+| **Git** | accelix-ai-plugins marketplace (design-apply plugin 자체) | `git` CLI | design-apply 룰/skill 갱신 후 |
+| (VCS 없음) | 사용자 로컬 (backlog / specs / 첨부) | 일반 파일 — 로컬 보존 | 적용 사이클 중 갱신 |
+| (별도 관리) | 디자인허브 (`mcs-design-workspace`) | 디자인허브 측 워크플로우 (이 plugin 책임 외) | spec/ADR 확인만, 갱신 X |
+
+→ 같은 세션에 cm + git 둘 다 등장 가능. 헷갈리지 않게 위 표 참조.
+
 ## 의존
 
 - `discord-webhook` plugin (사전 확인 메시지 송신용)
+- `claude-plastic-scm` plugin (ProjectMaid 체크인용)
 - 디자인허브 워크스페이스 (`C:/WorkSpace/github.io/AccelixGames/mcs-design-workspace`)
 - ProjectMaid 워크스페이스 (`C:/WorkSpace/AccelixGames/ProjectMaid`)

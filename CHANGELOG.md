@@ -6,6 +6,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [2.11.1] - 2026-05-14
+
+### 추가/변경
+- design-apply v0.1.0 → v0.1.1: VCS 책임 분담표 + [4]단계 응답 4종 확장(`예정` 추가) + 인덱스 3 파일(backlog/completed/deferred) 구조. wish-pool-jegal 사이클에서 박성범 응답이 "예정(작업 중)" 종류 다수 — 3종으로는 표현 부족 → 4종 + deferred 큐 모델.
+
 ## [2.11.0] - 2026-05-13
 
 ### 추가
