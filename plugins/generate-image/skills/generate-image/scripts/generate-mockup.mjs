@@ -2,24 +2,43 @@
 
 /**
  * generate-mockup.mjs
- * Gemini API 직접 호출로 이미지 생성 — MCP 서버 우회.
- * 백그라운드 서브에이전트에서 Bash로 호출 가능.
+ * Imagen 4 이미지 생성 — Vertex AI(ADC) 또는 Gemini AI Studio(API key) 선택 가능.
  *
  * Usage:
- *   GEMINI_API_KEY=<key> node generate-mockup.mjs \
- *     --prompt "first-person view inside cafe..." \
+ *   node generate-mockup.mjs \
+ *     --prompt "..." \
  *     --output "output/mockup.png" \
  *     [--aspect-ratio "16:9"] \
- *     [--reference "references/screen-mockup.png"]
+ *     [--fast] \
+ *     [--model imagen-4.0-ultra-generate-001] \
+ *     [--backend vertex|gemini]   ← default: vertex
  *
- * Environment:
- *   GEMINI_API_KEY — required
+ * Vertex AI (default):
+ *   Auth: ADC — gcloud auth application-default login (1회)
+ *   Project: GOOGLE_CLOUD_PROJECT env var 또는 ADC 파일의 quota_project_id 자동 읽음
+ *
+ * Gemini AI Studio:
+ *   Auth: GEMINI_API_KEY env var 필요
  */
 
-import { GoogleGenAI } from '@google/genai';
-import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
-import { resolve, dirname } from 'path';
+import { fileURLToPath, pathToFileURL } from 'url';
+import { join, dirname, resolve } from 'path';
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs';
 import { parseArgs } from 'util';
+import { homedir } from 'os';
+
+// Resolve @google/genai from plugin root (4 levels up from scripts/)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const pluginRoot = join(__dirname, '..', '..', '..', '..');
+const genaiPath = pathToFileURL(join(pluginRoot, 'node_modules', '@google', 'genai', 'dist', 'node', 'index.mjs')).href;
+
+let GoogleGenAI;
+try {
+  ({ GoogleGenAI } = await import(genaiPath));
+} catch {
+  ({ GoogleGenAI } = await import('@google/genai/node'));
+}
 
 const { values } = parseArgs({
   options: {
@@ -27,22 +46,57 @@ const { values } = parseArgs({
     output:         { type: 'string', short: 'o' },
     'aspect-ratio': { type: 'string', default: '16:9' },
     reference:      { type: 'string', short: 'r' },
+    fast:           { type: 'boolean', default: false },
+    backend:        { type: 'string', default: 'vertex' },
+    model:          { type: 'string' },
   },
   strict: true,
 });
 
 if (!values.prompt || !values.output) {
-  console.error('Usage: node generate-mockup.mjs --prompt "..." --output "path.png" [--aspect-ratio 16:9] [--reference ref.png]');
+  console.error('Usage: node generate-mockup.mjs --prompt "..." --output "path.png" [--aspect-ratio 16:9] [--fast] [--backend vertex|gemini]');
   process.exit(1);
 }
 
-const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
-  console.error('GEMINI_API_KEY environment variable is required');
-  process.exit(1);
+if (values.reference) {
+  console.error('Warning: --reference is not supported with Imagen 3. Embed style guidance in --prompt.');
 }
 
-const ai = new GoogleGenAI({ apiKey });
+const backend = values.backend === 'gemini' ? 'gemini' : 'vertex';
+
+let ai;
+
+if (backend === 'gemini') {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.error('GEMINI_API_KEY environment variable is required for --backend gemini');
+    process.exit(1);
+  }
+  ai = new GoogleGenAI({ apiKey });
+} else {
+  // Vertex AI: project from env var or ADC file
+  let projectId = process.env.GOOGLE_CLOUD_PROJECT;
+  if (!projectId) {
+    const adcPaths = [
+      join(homedir(), 'AppData', 'Roaming', 'gcloud', 'application_default_credentials.json'),
+      join(homedir(), '.config', 'gcloud', 'application_default_credentials.json'),
+    ];
+    for (const p of adcPaths) {
+      try {
+        if (existsSync(p)) {
+          const adc = JSON.parse(readFileSync(p, 'utf-8'));
+          if (adc.quota_project_id) { projectId = adc.quota_project_id; break; }
+        }
+      } catch {}
+    }
+  }
+  if (!projectId) {
+    console.error('No project ID found. Set GOOGLE_CLOUD_PROJECT or run: gcloud auth application-default login');
+    process.exit(1);
+  }
+  const location = process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+  ai = new GoogleGenAI({ vertexai: true, project: projectId, location });
+}
 const outputPath = resolve(values.output);
 const outputDir = dirname(outputPath);
 
@@ -50,61 +104,36 @@ if (!existsSync(outputDir)) {
   mkdirSync(outputDir, { recursive: true });
 }
 
-// Build prompt parts
-const contents = [];
-
-// If reference image provided, include it
-if (values.reference) {
-  const refPath = resolve(values.reference);
-  if (existsSync(refPath)) {
-    const refBytes = readFileSync(refPath);
-    const base64 = refBytes.toString('base64');
-    const ext = refPath.split('.').pop().toLowerCase();
-    const mime = ext === 'png' ? 'image/png' : 'image/jpeg';
-    contents.push({
-      inlineData: { mimeType: mime, data: base64 },
-    });
-  } else {
-    console.error(`Reference image not found: ${refPath}`);
-  }
-}
-
-// Add text prompt with aspect ratio instruction
-let fullPrompt = values.prompt;
-if (values['aspect-ratio']) {
-  fullPrompt += `, ${values['aspect-ratio']} aspect ratio`;
-}
-contents.push({ text: fullPrompt });
+// Aspect ratio mapping: Imagen 3 supports 1:1, 9:16, 16:9, 3:4, 4:3
+const ASPECT_MAP = {
+  '16:9': '16:9',
+  '9:16': '9:16',
+  '1:1':  '1:1',
+  '3:4':  '3:4',
+  '4:3':  '4:3',
+};
+const aspectRatio = ASPECT_MAP[values['aspect-ratio']] || '16:9';
+const model = values.model || (values.fast ? 'imagen-4.0-fast-generate-001' : 'imagen-4.0-generate-001');
 
 try {
-  const response = await ai.models.generateContent({
-    model: 'gemini-3.1-flash-image-preview',
-    contents: [{ role: 'user', parts: contents }],
+  const response = await ai.models.generateImages({
+    model,
+    prompt: values.prompt,
     config: {
-      responseModalities: ['TEXT', 'IMAGE'],
+      numberOfImages: 1,
+      aspectRatio,
     },
   });
 
-  // Extract image from response
-  const parts = response.candidates?.[0]?.content?.parts || [];
-  let saved = false;
-
-  for (const part of parts) {
-    if (part.inlineData?.mimeType?.startsWith('image/')) {
-      const buffer = Buffer.from(part.inlineData.data, 'base64');
-      writeFileSync(outputPath, buffer);
-      console.log(outputPath);
-      saved = true;
-      break;
-    }
-  }
-
-  if (!saved) {
-    // Try text response for debugging
-    const textParts = parts.filter(p => p.text).map(p => p.text).join('\n');
-    console.error('No image in response.', textParts ? `Text: ${textParts}` : '');
+  const imageBytes = response.generatedImages?.[0]?.image?.imageBytes;
+  if (!imageBytes) {
+    console.error('No image in response.');
     process.exit(1);
   }
+
+  const buffer = Buffer.from(imageBytes, 'base64');
+  writeFileSync(outputPath, buffer);
+  console.log(outputPath);
 } catch (err) {
   console.error(`Generation failed: ${err.message}`);
   process.exit(1);

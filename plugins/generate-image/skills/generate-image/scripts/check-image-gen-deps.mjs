@@ -17,52 +17,34 @@ import { homedir } from 'os';
 const projectPath = resolve(process.argv[2] || process.cwd());
 
 const result = {
-  mcp_server: { ok: false },
+  mcp_server: { ok: true },
   api_key: { ok: false },
   config: { ok: false, path: '', error: '' },
   references: { ok: false, registered: [], missing: [] },
 };
 
-// --- 1. mcp_server check ---
-let settingsParsed = null;
-const settingsPath = join(homedir(), '.claude', 'settings.json');
+// --- 1. mcp_server check (CLI-only mode — always ok) ---
+// MCP server removed; all generation via Vertex AI CLI wrapper.
+
+// --- 2. ADC (Application Default Credentials) check ---
+// Vertex AI mode uses ADC instead of API key.
+// Check: GOOGLE_CLOUD_PROJECT is set + ADC credentials file exists.
+const ADC_PATH = join(homedir(), 'AppData', 'Roaming', 'gcloud', 'application_default_credentials.json');
+const ADC_PATH_UNIX = join(homedir(), '.config', 'gcloud', 'application_default_credentials.json');
 
 try {
-  const raw = readFileSync(settingsPath, 'utf-8');
-  settingsParsed = JSON.parse(raw);
-} catch {
-  settingsParsed = null;
-}
-
-if (settingsParsed?.mcpServers?.['image-gen']) {
-  result.mcp_server.ok = true;
-} else {
-  // fallback: claude mcp list
-  try {
-    const stdout = execSync('claude mcp list', {
-      encoding: 'utf-8',
-      timeout: 10000,
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-    result.mcp_server.ok = /image-gen/i.test(stdout);
-  } catch {
-    result.mcp_server.ok = false;
+  const adcExists = existsSync(ADC_PATH) || existsSync(ADC_PATH_UNIX);
+  const adcPath = existsSync(ADC_PATH) ? ADC_PATH : ADC_PATH_UNIX;
+  let project = process.env.GOOGLE_CLOUD_PROJECT;
+  if (!project && adcExists) {
+    try {
+      const adc = JSON.parse(readFileSync(adcPath, 'utf-8'));
+      project = adc.quota_project_id;
+    } catch {}
   }
-}
-
-// --- 2. api_key check ---
-// API key is stored in MCP server config (not in settings.json).
-// If the MCP server is registered AND connected, the key is presumably valid.
-// We verify by checking the mcp list output for "Connected" status.
-try {
-  if (result.mcp_server.ok) {
-    const stdout = execSync('claude mcp list', {
-      encoding: 'utf-8',
-      timeout: 10000,
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-    // Check if image-gen shows "Connected" (not just registered)
-    result.api_key.ok = /image-gen.*Connected/i.test(stdout);
+  if (adcExists && project) {
+    result.api_key.ok = true;
+    result.api_key.project = project;
   }
 } catch {
   result.api_key.ok = false;

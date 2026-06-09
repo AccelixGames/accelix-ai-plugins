@@ -1,0 +1,9 @@
+{
+  "name": "generate-image-plugin",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@google/genai": "^1.0.0"
+  }
+}

@@ -23,8 +23,8 @@ Two modes: **Ideation** (divergent exploration) and **Detail** (convergent refin
 4. Always use `quality: "fast"` — no exceptions
 5. Prompt language: always English. User-facing descriptions: always Korean.
 6. User shorthand: ㅇ / ㅇㅇ / ㅇㅋ / sp = Yes. Number only = confirm that variant. Number + feedback = revise. ㄴ / ㄴㄴ = No.
-7. **생성 백엔드 필수** — MCP 서버 또는 GEMINI_API_KEY 중 하나는 있어야 함. 둘 다 없으면 Step 0에서 설치 안내.
-8. **서브에이전트에서는 CLI 래퍼 사용** — MCP 도구는 백그라운드 서브에이전트에서 사용 불가. 서브에이전트에서는 반드시 CLI 래퍼(`generate-mockup.mjs`)를 Bash로 호출.
+7. **생성 백엔드 필수** — MCP 서버 또는 Vertex AI ADC 인증 중 하나는 있어야 함. 둘 다 없으면 Step 0에서 설치 안내.
+8. **항상 CLI 래퍼 사용** — MCP 서버 없음. 메인 세션·서브에이전트 모두 `generate-mockup.mjs`를 PowerShell/Bash로 호출. Vertex AI Imagen 3 사용 (Google Cloud 무료 크레딧 적용).
 
 ---
 
@@ -50,10 +50,10 @@ The script outputs JSON:
 **Silent pass**: 모든 체크가 통과하면 유저에게 아무것도 보여주지 않고 config를 세션 컨텍스트에 로드한 뒤 바로 Step 1로 진행.
 
 **Failure only**: 실패한 항목이 있을 때만 유저에게 안내:
-- `mcp_server` 또는 `api_key`가 false → MCP 사용 불가. **GEMINI_API_KEY 환경변수가 있으면 CLI 래퍼로 폴백 가능.** 둘 다 없으면 → Installation Guide 안내.
+- `api_key`가 false → ADC 미설정. → Installation Guide A 안내.
 - `config` 또는 `references` 실패 → 해당 Installation Guide 섹션 실행 후 진행.
 
-**If the script itself fails** (file not found, crash): Run `claude mcp list` directly to check MCP server. If MCP is missing → check GEMINI_API_KEY for CLI fallback. Both missing → Installation Guide A.
+**If the script itself fails** (file not found, crash): Check ADC → `gcloud auth application-default print-access-token`. Fails → Installation Guide A.
 
 ---
 
@@ -65,26 +65,44 @@ The script outputs JSON:
 
 `mcp_server.ok` = false일 때. **이 단계가 해결될 때까지 스킬 진행 불가.**
 
-1. "image-gen MCP 서버가 등록되지 않았음. Gemini API key가 필요함."
-2. API key 없으면 → `https://aistudio.google.com/apikey` 안내
-3. billing 활성화 필요 (이미지 생성은 유료 전용) 안내
-4. 유저가 key를 제공하면:
+1. "image-gen MCP 서버가 등록되지 않았음. Vertex AI ADC 설정이 필요함."
+2. ADC 설정 안내:
+   ```bash
+   # 방법 A: 자동 설정 스크립트 (권장)
+   bash <(curl -sSL https://storage.googleapis.com/cloud-samples-data/adc/setup_adc.sh)
+
+   # 방법 B: 수동
+   gcloud auth application-default login
+   gcloud config set project <YOUR_PROJECT_ID>
    ```
-   ! claude mcp add image-gen --scope user -e GEMINI_API_KEY=<key> -- npx -y mcp-image
+   **Windows 전용**: PowerShell 자동 설정 스크립트 사용 가능:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File "<CLAUDE_PLUGIN_ROOT>/skills/generate-image/scripts/setup-vertex-auth.ps1"
+   ```
+   (gcloud 설치 + ADC 로그인 + project 설정 + 환경변수 등록 한 번에 처리)
+3. Vertex AI API 활성화 필요 안내 (Google Cloud Console → Vertex AI API 사용 설정)
+4. 유저가 project ID를 제공하면:
+   ```
+   ! claude mcp add image-gen --scope user -e GOOGLE_CLOUD_PROJECT=<project-id> -e GOOGLE_CLOUD_LOCATION=us-central1 -- npx -y mcp-image
    ```
 5. **"세션 재시작 필요. 재시작 후 `/generate-image`를 다시 호출해줘."**
 6. 여기서 스킬 종료. 다음 단계 진행하지 않음.
 
-### B) API Key Issue
+### B) ADC Auth Issue
 
-`api_key.ok` = false일 때 (서버는 있지만 연결 안 됨). **진행 불가.**
+`api_key.ok` = false일 때 (ADC 미설정 또는 프로젝트 미지정). **진행 불가.**
 
-1. MCP 서버 재등록 안내:
+1. ADC 재설정 안내:
+   ```bash
+   gcloud auth application-default login
+   gcloud config set project <YOUR_PROJECT_ID>
+   ```
+2. MCP 서버 재등록:
    ```
    ! claude mcp remove image-gen --scope user
-   ! claude mcp add image-gen --scope user -e GEMINI_API_KEY=<key> -- npx -y mcp-image
+   ! claude mcp add image-gen --scope user -e GOOGLE_CLOUD_PROJECT=<project-id> -e GOOGLE_CLOUD_LOCATION=us-central1 -- npx -y mcp-image
    ```
-2. 세션 재시작 필요.
+3. 세션 재시작 필요.
 
 ### Initialize) 프로젝트 초기화
 
@@ -138,7 +156,7 @@ Warning 표시 후, 다음 안내를 추가로 제공:
 1. **플랫폼 확인**: Windows인 경우에만 클립보드 저장 실행. 다른 OS에서는 "클립보드 자동 저장은 현재 Windows만 지원됩니다. 파일을 직접 복사해주세요." 안내.
 2. **클립보드 저장 실행**:
    ```bash
-   powershell -ExecutionPolicy Bypass -File "C:/Users/chris/.claude/plugins/marketplaces/accelix-ai-plugins/plugins/generate-image/skills/generate-image/scripts/save-clipboard.ps1" -TargetPath "<missing-reference-absolute-path>"
+   powershell -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/save-clipboard.ps1" -TargetPath "<missing-reference-absolute-path>"
    ```
 3. **결과 확인**: 스크립트 stdout이 `OK`이면 성공, `NO_IMAGE`이면 "클립보드에 이미지가 없습니다. 이미지를 복사(Ctrl+C) 후 다시 시도해주세요." 안내.
 4. **파일 존재 검증**: 저장 후 해당 경로에 파일이 실제로 존재하는지 확인.
@@ -261,47 +279,33 @@ Once matched:
 
 ## Step 4: Generate
 
-두 가지 백엔드 중 상황에 맞는 것을 사용:
+**백엔드: CLI 래퍼 전용 (Vertex AI Imagen 3)** — MCP 서버 없음. 메인 세션·서브에이전트 모두 동일한 CLI 래퍼 사용. Google Cloud 무료 크레딧 적용.
 
-### 4-A: MCP 서버 (메인 세션 — 기본)
+**PowerShell (메인 세션)**:
+```powershell
+$env:GOOGLE_CLOUD_PROJECT = "mcs-project-495310"
+node "${env:CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate-mockup.mjs" `
+  --prompt "<Step 3 프롬프트>" `
+  --output "<output-path>.png" `
+  --aspect-ratio "16:9"
+```
 
-메인 세션에서 직접 생성할 때 사용. `mcp__image-gen__generate_image` 호출:
-
-| Parameter | Value |
-|---|---|
-| `prompt` | Step 3에서 구성한 프롬프트 |
-| `inputImagePath` | **Ideation**: 카테고리 레퍼런스 절대경로. **Detail**: 확정 이미지의 `output/` 경로. |
-| `quality` | `"fast"` |
-| `aspectRatio` | 뷰 타입별: `"1:1"` isometric, `"3:4"` front/exploded/side, `"16:9"` scene/layout |
-| `purpose` | `"In-game style reference for [category] — [entity description]"` |
-| `fileName` | Ideation: `<entity_id>-variant-<N>.png`. Detail: `<entity_id>-<view>.png`. 확장자 포함 필수. |
-
-MCP는 `output/` 디렉토리에 이미지를 생성함 (변경 불가). 이 경로의 파일은 **임시**임.
-
-### 4-B: CLI 래퍼 (서브에이전트 / MCP 불가 환경)
-
-**MCP 도구는 백그라운드 서브에이전트에서 사용 불가.** 서브에이전트에서 이미지를 생성할 때는 CLI 래퍼를 Bash로 호출:
-
+**Bash (서브에이전트)**:
 ```bash
-GEMINI_API_KEY=<key> node "${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate-mockup.mjs" \
+GOOGLE_CLOUD_PROJECT=mcs-project-495310 node "${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/generate-mockup.mjs" \
   --prompt "<Step 3 프롬프트>" \
   --output "<output-path>.png" \
-  --aspect-ratio "16:9" \
-  --reference "<reference-image-path>"
+  --aspect-ratio "16:9"
 ```
 
 | Flag | Value |
 |---|---|
 | `--prompt` | Step 3에서 구성한 프롬프트 |
 | `--output` | 출력 파일 경로 (디렉토리 자동 생성) |
-| `--aspect-ratio` | `"1:1"`, `"3:4"`, `"16:9"` 등 (기본값: `"16:9"`) |
-| `--reference` | 레퍼런스 이미지 경로 (선택) |
+| `--aspect-ratio` | `"1:1"` isometric, `"3:4"` front/side, `"16:9"` scene/layout (기본값: `"16:9"`) |
+| `--fast` | 고속 모드 (`imagen-3.0-fast-generate-001`) — 탐색/반복 시 권장 |
 
-**GEMINI_API_KEY 획득**:
-```bash
-claude mcp get image-gen
-```
-출력의 `GEMINI_API_KEY=...` 값을 사용.
+> **Note**: `--reference` 미지원 (Imagen 3 제한). 레퍼런스 스타일은 프롬프트에 텍스트로 기술.
 
 **서브에이전트 디스패치 패턴**:
 ```
@@ -309,16 +313,15 @@ Agent(
   description: "Generate image: [entity_id]",
   run_in_background: true,
   prompt: """
-    Generate image via Bash CLI:
+    Generate image via PowerShell CLI:
 
-    GEMINI_API_KEY=[key] node "[plugin-scripts-path]/generate-mockup.mjs" \
-      --prompt "[constructed prompt]" \
-      --output "[output-path].png" \
-      --aspect-ratio "16:9" \
-      --reference "[reference-path]"
+    $env:GOOGLE_CLOUD_PROJECT = "mcs-project-495310"
+    node "[plugin-scripts-path]/generate-mockup.mjs" `
+      --prompt "[constructed prompt]" `
+      --output "[output-path].png" `
+      --aspect-ratio "16:9"
 
-    Use a 120 second timeout for the Bash command.
-    Report: file path and success/failure.
+    Use a 120 second timeout. Report: file path and success/failure.
   """
 )
 ```
@@ -399,12 +402,12 @@ npm install -g @google/genai
 
 | Error | Action |
 |---|---|
-| MCP server not connected | CLI 래퍼 폴백 시도 (GEMINI_API_KEY 확인). 둘 다 없으면 Installation Guide A |
-| API key missing/invalid | MCP 재등록 또는 GEMINI_API_KEY 환경변수 설정 안내 |
+| MCP server not connected | CLI 래퍼 폴백 시도 (ADC 인증 + GOOGLE_CLOUD_PROJECT 확인). 둘 다 없으면 Installation Guide A |
+| ADC missing/invalid | `gcloud auth application-default login` 실행 안내. MCP 재등록 또는 GOOGLE_CLOUD_PROJECT 환경변수 설정 안내 |
 | Config not found | Installation Guide: Initialize 실행 |
 | Reference missing for category | Installation Guide D — 강한 경고, 확인 후 진행 |
 | API failure / generation error | 에러 표시, 파일 미생성 |
-| Quota exceeded | 경고 + https://aistudio.google.com 확인 안내 |
+| Quota exceeded | 경고 + Google Cloud Console → Vertex AI 할당량 페이지 확인 안내 |
 | entity_id missing | 유저에게 입력 요청 |
 | Dep-check script missing | `claude mcp list`로 직접 MCP 체크, config 직접 로드 시도 |
 

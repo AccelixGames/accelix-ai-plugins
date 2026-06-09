@@ -31,8 +31,8 @@
     },
     {
       "name": "generate-image",
-      "description": "AI image generation for game design communication — ideation and detail modes via Gemini/Imagen MCP",
-      "version": "0.2.0",
+      "description": "AI image generation for game design communication — ideation and detail modes, Imagen via Vertex AI (ADC) or Gemini AI Studio backend",
+      "version": "0.3.0",
       "author": {
         "name": "AccelixGames",
         "email": "accelix.staff@gmail.com"
