@@ -156,7 +156,7 @@ Warning 표시 후, 다음 안내를 추가로 제공:
 1. **플랫폼 확인**: Windows인 경우에만 클립보드 저장 실행. 다른 OS에서는 "클립보드 자동 저장은 현재 Windows만 지원됩니다. 파일을 직접 복사해주세요." 안내.
 2. **클립보드 저장 실행**:
    ```bash
-   powershell -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skills/generate-image/scripts/save-clipboard.ps1" -TargetPath "<missing-reference-absolute-path>"
+   powershell -ExecutionPolicy Bypass -File "<CLAUDE_PLUGIN_ROOT>/skills/generate-image/scripts/save-clipboard.ps1" -TargetPath "<missing-reference-absolute-path>"
    ```
 3. **결과 확인**: 스크립트 stdout이 `OK`이면 성공, `NO_IMAGE`이면 "클립보드에 이미지가 없습니다. 이미지를 복사(Ctrl+C) 후 다시 시도해주세요." 안내.
 4. **파일 존재 검증**: 저장 후 해당 경로에 파일이 실제로 존재하는지 확인.
