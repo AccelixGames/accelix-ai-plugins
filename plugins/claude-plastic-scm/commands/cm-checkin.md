@@ -11,6 +11,8 @@ allowed-tools:
   - Bash(cat:*)
   - Bash(tail:*)
   - Bash(grep:*)
+  - Bash(.agents/skills/_plastic-resource/scripts/plastic:*)
+  - Bash(.agents\skills\_plastic-resource\scripts\plastic.cmd:*)
   - Read
   - Edit
   - Write
@@ -33,6 +35,37 @@ Create a PlasticSCM checkin with intelligent Korean comment + safe file inclusio
 
 If context contains `NOT_A_WORKSPACE` or is empty, stop:
 - PlasticSCM workspace가 아님. git repo면 `/commit`/`/ship` 사용.
+
+### Step 0.3 — Authorization guard
+
+체크인은 유저가 **이 턴에 명시적으로 지시**했거나 named plan stage 실행 승인이 있을 때만.
+진단/리뷰/상태 확인 턴에서 "마무리 커밋"을 발명하지 않는다. 승인 1회 = 체크인 1회.
+이 커맨드가 호출됐다는 것 자체가 보통 지시지만, 모호하면 진행 전에 확인.
+
+### Step 0.5 — Branch guard (main 직접 체크인 금지)
+
+Parse the current branch from workspace info (`cm wi`).
+
+- 브랜치가 `/main` 또는 `/main/beta` 같은 메인 라인이면 **stop**:
+  "현재 브랜치가 {branch} — main 직접 체크인 금지. sandbox 자식 브랜치를 만들어서 작업하고
+  main 반영은 server-side merge(push)로. 그래도 진행할까?"
+- 유저가 명시적으로 확인해야만 진행.
+
+### Step 0.7 — Wrapper routing (ProjectMaid 등)
+
+Check for `.agents/skills/_plastic-resource/scripts/plastic` (Windows: `plastic.cmd`) at the workspace root.
+
+**If it exists**, this command's Steps 1–9 are superseded — the wrapper owns normalization
+(CH checkout / PR add / Unity `.meta` pairing / batching), the compile gate, and verification:
+
+1. Read the project skill `.agents/skills/plastic-checkin/SKILL.md` (인자 계약·하드 룰 SSOT).
+2. Scope via `plastic pending-list` / `plastic pending-paths -OutputFile <f>`.
+3. Run `plastic checkin -PathListFile <f> -Title "<제목>" -Summary "<불렛>"` (전량이면 `-All`은
+   유저가 명시했을 때만). 한글 코멘트가 길면 `-CommentFile` (temp, 워크스페이스 밖).
+4. Success = output contains **both** `checkin_success=true` and `changeset=<n>`. `blocked=true`면
+   `blocked_reason=`/`recommended_next=`를 따른다. 부분 체크인 발생 시 자동 후속 changeset 금지.
+
+Then stop — Steps 1–9 below are the fallback for workspaces **without** the wrapper.
 
 ### Step 1 — Filter patterns
 

@@ -20,6 +20,14 @@ PlasticSCM (Unity Version Control) 워크플로우 자동화 플러그인.
 | `/cm-compile-check` | Unity 컴파일 에러 확인 | `/cm-compile-check` |
 | `/cm-hidden` | 비공개/숨김 변경 열람·관리 | `/cm-hidden [unhide\|hide\|unignore\|ignore]` |
 | `/cm-diff` | 체인지셋, 브랜치, 라벨 간 비교 | `/cm-diff cs:100 cs:200` |
+| `/cm-lint` | 스킬 자가진단·수리 — `skill:plastic-scm` 이슈 triage + 4-gate 검증 | `/cm-lint` (마켓플레이스 레포에서) |
+
+## 프로젝트 래퍼 라우팅 (ProjectMaid 등)
+
+워크스페이스 루트에 `.agents/skills/_plastic-resource/scripts/plastic` 래퍼가 있으면
+그 래퍼가 SCM 작업의 1순위 경로다 (비대화형 diff, WritePolicy 2단 머지, owner 게이트,
+컴파일 게이트 내장). 이 플러그인의 명령·raw `cm` 레시피는 래퍼 없는 워크스페이스용
+fallback. 상세는 스킬의 "Project Wrapper Routing" 섹션.
 
 ## 자동 트리거
 

@@ -292,11 +292,15 @@ cm diff br:/main/feature path/to/file    # branch + path → GUI
 
 | Goal | Command |
 |------|---------|
-| Changed file list | `cm diff cs:A cs:B --format="{path}\|{status}" --nototal` |
+| Changed file list | `cm diff cs:A cs:B --format="{path}\|{status}"` (주의: `--nototal` 미지원 — 위 섹션) |
 | File content diff (text) | `cm cat "serverpath:{path}#cs:A" > a.txt && cm cat "serverpath:{path}#cs:B" > b.txt && diff a.txt b.txt` |
 | Save both revisions to disk | `cm diff cs:A cs:B path/to/file --download="C:/tmp/diffout"` |
 
 `--download={dir}` saves both revisions of the file(s) into the directory without launching the GUI, which is the official CLI-only workflow for per-file comparison.
+
+**Wrapper workspaces (ProjectMaid 등):** raw `cm diff`는 어떤 형태든 금지 — 프로젝트 래퍼
+`plastic pending-diff` / `plastic changeset-diff`가 `cm cat` 기반 비대화형 diff 번들을 대신
+만든다. SKILL.md "Project Wrapper Routing" 참고.
 
 ---
 

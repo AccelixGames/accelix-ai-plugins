@@ -247,7 +247,7 @@ Apply the agreed approach from `fix_plan[cluster_id].approach`. Scope matrix:
 | `skills/plastic-scm/scripts/**` | ✅ | Must stay generic (no project-specific paths/branches/csids) |
 | `skills/plastic-scm/templates/**` | ✅ | Template refinement |
 | `commands/cm-*.md` | ✅ | Slash command workflow edits |
-| `hooks/**` | ❌ (Phase 3 only) | Deferred to Phase 3 plan |
+| `hooks/**` | ⚠️ (escalate to user first) | Hook regression은 dry-run stdin 테스트로 수동 검증 필수 (1.13.x 검증 세트 참고) |
 | `.claude-plugin/plugin.json` version | ✅ | Bump on lint commit |
 | `CHANGELOG.md` | ✅ | Add lint entry |
 
@@ -317,7 +317,7 @@ Gates:
 - Regression SM-{X}: pass (no deviation from main)
 - Regression SM-{Y}: pass (no deviation from main)
 
-Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
+Co-Authored-By: Claude <noreply@anthropic.com>
 "
 # merge worktree back (per using-git-worktrees skill guidance)
 cd <marketplace-repo-main>
@@ -369,9 +369,9 @@ Landed commits:
 
 ## Scope reminder — what `/cm-lint` does NOT do
 
-- Does not auto-capture new gotchas (Phase 3 plan — hook-based reflection)
+- Does not auto-capture new gotchas — capture는 PostToolUse hook + Post-task Reflection(1.13.0~)이 담당하고, `/cm-lint`는 쌓인 이슈 처리만
 - Does not auto-promote held issues (always manual triage — per locked decision #4)
-- Does not modify `hooks/**` (Phase 3 territory)
+- Does not modify `hooks/**` without user escalation (scope matrix)
 - Does not touch other plugins in the marketplace (scope matrix enforces this)
 
 ## Troubleshooting

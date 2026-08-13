@@ -3,6 +3,49 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [1.14.0] - 2026-08-13
+
+ProjectMaid Codex 플라스틱 스킬(`.agents/skills/plastic-*` + `_plastic-resource` 파이썬 래퍼)과의
+4개월 독립 진화 갭 해소. 플러그인이 프로젝트 래퍼를 인지하고 라우팅하도록 갱신.
+
+### 추가 — Project Wrapper Routing
+
+- **SKILL.md "Project Wrapper Routing" 섹션** — 워크스페이스 루트에
+  `.agents/skills/_plastic-resource/scripts/plastic`(POSIX)/`plastic.cmd`(Windows)가 있으면
+  래퍼가 SCM 작업 1순위. 작업→래퍼 명령 매핑 표(status/pending-diff/changeset-diff/checkin/
+  editcomment/branch/push/pull/merge/sync/cleanup) + Core Principles에 wrapper-first 원칙 추가.
+- **래퍼 워크스페이스 하드 룰 반영** (프로젝트 Codex 스킬과 공유하는 계약): raw `cm diff` 전면
+  금지(GUI/SemanticMerge), main 직접 체크인 금지(sandbox 브랜치 + server-side push), 체크인
+  authorization(명시 지시/stage 승인 1회=체크인 1회), 머지 2-changeset 규율(`-WritePolicy` →
+  `-Run -PolicyFile` 2단, 머지 결과 즉시 체크인 + 수리 별도 cs), owner 추적(`att:owner` SSOT,
+  공용 계정 함정), 한글 코멘트 temp 파일(워크스페이스 밖), 구조화 출력 완료 토큰
+  (`checkin_success=true`+`changeset=`, `sync_done=true` 등).
+- **머지 코멘트 필수 4필드 룰 (2026-05-19~ Discord 공지)** — SKILL.md + `/cm-merge-comment`에
+  owner 라벨 / 브랜치 합류 문장 / 작업 요약 / 충돌 처리 명시. 자연어 풀어쓰기 예시 포함.
+  (이전 세션 미커밋 작업 랜딩)
+- `/cm-checkin` Step 0.3 authorization guard + Step 0.5 branch guard(main 직접 체크인 차단) +
+  Step 0.7 wrapper routing(`plastic checkin -PathListFile … -Title … -Summary …`).
+- `/cm-diff` Step 0 wrapper routing — 래퍼 워크스페이스에서는 raw `cm diff` 전 형태 금지,
+  `plastic pending-diff`/`changeset-diff`로 위임.
+- `/cm-merge-comment` Step 0.5 wrapper routing — `plastic push`/`plastic merge`의
+  `comment_context_file` → `-CommentFile` 플로우 안내. 충돌 안내를 "GUI에서 해결" →
+  WritePolicy 2단으로 교체.
+- `/cm-status` 래퍼 노트, `/cm-history` 공용 계정 owner 판정 주의(브랜치 `att:owner` 우선).
+
+### 수정 — 노후·모순 서술
+
+- **`cm diff --nototal` 모순 해소** — `references/cm-commands.md`가 "미지원"이라 못박았는데
+  `/cm-diff`·SKILL.md Quick Reference·GUI Trap 대안 표 3곳이 계속 사용 중이던 것 제거.
+- **`gotcha-open` 라벨 유령 제거** — 1.12.0에서 라벨 스키마 단순화했는데 SKILL.md
+  Post-task Reflection과 `templates/reflection-prompt.md`에 남아 있던 `gh issue create`
+  라벨 인자 수정 (`skill:plastic-scm` 단일).
+- `/cm-history`에 Step 0 workspace guard 추가 (1.9.0 때 누락).
+- `/cm-lint` stale 서술 갱신 — scope matrix `hooks/**` "Phase 3 only"(이미 1.13.0 랜딩) →
+  유저 에스컬레이션 조건부, `Co-Authored-By: Claude Opus 4.7` 모델 하드코딩 → 모델 중립.
+- SKILL.md Quick Reference checkin 행에 파일 명시 필수(bare 호출 GUI 체크 상태 함정) 반영.
+- README에 `/cm-lint` 등재 + 래퍼 라우팅 섹션 추가.
+- CHANGELOG 1.11.0 항목 중복 붙여넣기 제거.
+
 ## [1.13.2] - 2026-04-20
 
 ### 변경
@@ -102,19 +145,6 @@
 - #2 — label bootstrap 누락 (최초 실행 시 수동 생성 필요)
 - #3 — Git Bash MSYS가 gh 커맨드 인자의 `/cm-*` 토큰을 Windows 경로로 변환 (`MSYS_NO_PATHCONV=1` 가드 필요)
 - #4 — Phase B/C에 gotcha-open → gotcha-accepted 라벨 전환 명령 누락
-
-
-- **`/cm-lint` 슬래시 커맨드** — plastic-scm 스킬 전용 gotcha 진단+수리. 4-phase 워크플로우: GitHub Issues(`skill:plastic-scm` 필터)에서 gotcha-open/hold 수집 → 타이틀 유사도 클러스터링 → 유저 triage(accept/hold/reject) → worktree에서 4-gate 검증(baseline 재현 / primary fix 검증 / regression 2종) → 통과 시 commit+close, 실패 시 worktree 폐기+lint-attempted 라벨.
-- `skills/plastic-scm/templates/gotcha-template.md` — 이슈 body 필수 필드(증상, 재현 단계, 시도, 해결/가설, 1줄 개선안, 영향 범위) + 라벨 스키마(`skill:plastic-scm` + `gotcha-open/hold/accepted/rejected`) + hold 카운터 규약(`lint-hold: bump (now N)` 코멘트).
-- `skills/plastic-scm/templates/regression-smoke.md` — lint Phase C 회귀 검증용 smoke test 4개(SM-01 단순 checkin, SM-02 폴더+CH/PR 혼재, SM-03 label with -c=, SM-04 merge_investigate.sh). 프로젝트 비특화, 일반 cm 플로우만.
-- `docs/plans/2026-04-20-gotcha-lint-system.md` — 이번 릴리스의 설계+구현 플랜(Phase 1+2). Phase 3(hook 기반 auto-capture)는 별도 플랜.
-
-### 설계 결정 (locked)
-- Reflection 트리거: **C+Hook hybrid**(Phase 3 예정)
-- Hold 카운터: comment 누적(`lint-hold: bump`)
-- 검증: 수동 재현 + script 자동 + 회귀 2종(smoke 세트에서 선정)
-- 승격: 항상 수동, hold 카운터는 정렬 가중치 only
-- 원칙: "잘못된 업데이트 > 업데이트 없음" — 4-gate 전부 통과해야 fix land
 
 ## [1.10.1] - 2026-04-20
 

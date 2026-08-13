@@ -31,4 +31,10 @@ Group `cm status` output into: **Added**, **Changed**, **Deleted**, **Moved**, *
 
 Counts per category + total. If no pending changes, state workspace is clean.
 
+### Note — Wrapper workspace (ProjectMaid 등)
+
+`.agents/skills/_plastic-resource/scripts/plastic`가 있는 워크스페이스면 changelist 단위
+그룹 뷰는 `plastic status` / `plastic pending-list`가 더 정확하다 (Unity `.meta` 소유
+오표시 함정 회피). 후속 SCM 작업(체크인·diff·머지)도 그 래퍼로 라우팅.
+
 Use only the tools listed above.

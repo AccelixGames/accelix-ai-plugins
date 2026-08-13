@@ -48,7 +48,7 @@ gotcha issue로 capture할까? (Y/N, skip시 보류)
 
 ## User response handling
 
-- **Y**: draft issue body using `gotcha-template.md` structure, create with `MSYS_NO_PATHCONV=1 gh issue create --repo <marketplace> --label "skill:plastic-scm,gotcha-open" --body-file <tmp> --title "[cm <subcmd>] <summary>"`. Confirm issue URL to user.
+- **Y**: draft issue body using `gotcha-template.md` structure, create with `MSYS_NO_PATHCONV=1 gh issue create --repo <marketplace> --label "skill:plastic-scm" --body-file <tmp> --title "[cm <subcmd>] <summary>"`. Confirm issue URL to user.
 - **N**: no action. Acknowledge briefly ("기록 skip").
 - **무응답·기타**: treat as skip (no issue).
 
